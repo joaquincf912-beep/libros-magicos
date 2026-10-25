@@ -445,3 +445,228 @@ document.addEventListener('DOMContentLoaded', () => {
         'color: #a855f7; font-size: 14px;'
     );
 });
+
+// ========== PAYMENT FORM ==========
+const PaymentForm = {
+    init() {
+        this.planSelectors = document.querySelectorAll('.plan-card');
+        this.form = document.getElementById('order-form');
+        this.paypalBtn = document.getElementById('paypal-btn');
+        this.planSummary = document.querySelector('.plan-summary');
+        this.childName = document.getElementById('child-name');
+        this.childAge = document.getElementById('child-age');
+        this.bookTitle = document.getElementById('book-title');
+        this.bookDescription = document.getElementById('book-description');
+        
+        if (!this.planSelectors.length) return;
+        
+        this.planPrices = {
+            basico: 9.99,
+            familiar: 24.99,
+            premium: 39.99
+        };
+        
+        this.planFeatures = {
+            basico: [
+                '1 libro digital (24 páginas)',
+                'Nombre y apariencia del niño/a',
+                'Formato PDF alta calidad',
+                'Descarga instantánea',
+                '1 revisión de contenido'
+            ],
+            familiar: [
+                '3 libros digitales (24 pág. c/u)',
+                'Nombre y apariencia de cada niño',
+                '3 portadas diferentes',
+                'Descarga instantánea + imprimible',
+                '2 revisiones por libro',
+                'Versión interactiva con audio'
+            ],
+            premium: [
+                '5 libros digitales personalizados',
+                'Personalización completa',
+                'Formato PDF + interactivo con audio',
+                'Descarga instantánea ilimitada',
+                'Revisiones ilimitadas',
+                'Dedicatoria especial animada',
+                'Actualizaciones gratuitas de por vida'
+            ]
+        };
+        
+        this.setupPlanSelection();
+        this.setupPayPalIntegration();
+    },
+    
+    setupPlanSelection() {
+        this.planSelectors.forEach(card => {
+            card.addEventListener('click', () => {
+                const plan = card.dataset.plan;
+                this.selectPlan(plan);
+            });
+            
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const plan = card.dataset.plan;
+                    this.selectPlan(plan);
+                }
+            });
+        });
+        
+        // Select first plan by default
+        if (this.planSelectors.length > 0) {
+            this.selectPlan(this.planSelectors[0].dataset.plan);
+        }
+    },
+    
+    selectPlan(plan) {
+        // Update plan cards visual state
+        this.planSelectors.forEach(card => {
+            if (card.dataset.plan === plan) {
+                card.classList.add('pricing-card-featured');
+                card.classList.remove('pricing-card');
+                card.setAttribute('aria-pressed', 'true');
+            } else {
+                card.classList.remove('pricing-card-featured');
+                card.classList.add('pricing-card');
+                card.setAttribute('aria-pressed', 'false');
+            }
+        });
+        
+        // Update price display
+        const price = this.planPrices[plan];
+        document.querySelector('.plan-price').textContent = `$${price.toFixed(2)}`;
+        document.querySelector('.plan-period').textContent = this.getPeriod(plan);
+        
+        // Update plan info
+        const planName = document.querySelector('.plan-name');
+        planName.textContent = this.getPlanName(plan);
+        
+        // Update book count
+        const bookCount = this.getBookCount(plan);
+        document.querySelector('.plan-books-count').textContent = bookCount;
+        
+        // Update form description
+        const formDesc = document.querySelector('.form-description');
+        if (formDesc) {
+            formDesc.textContent = `Plan: ${this.getPlanName(plan)} - $${price.toFixed(2)}`;
+        }
+        
+        // Store selected plan
+        this.selectedPlan = plan;
+    },
+    
+    getPlanName(plan) {
+        const names = {
+            basico: 'Básico',
+            familiar: 'Familiar',
+            premium: 'Premium'
+        };
+        return names[plan] || 'Básico';
+    },
+    
+    getPeriod(plan) {
+        const periods = {
+            basico: 'por ebook',
+            familiar: '3 ebooks',
+            premium: '5 ebooks'
+        };
+        return periods[plan] || 'por ebook';
+    },
+    
+    getBookCount(plan) {
+        const counts = {
+            basico: '1',
+            familiar: '3',
+            premium: '5'
+        };
+        return counts[plan] || '1';
+    },
+    
+    setupPayPalIntegration() {
+        if (!this.paypalBtn) return;
+        
+        this.paypalBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.processPayment();
+        });
+    },
+    
+    processPayment() {
+        if (!this.selectedPlan) {
+            alert('Por favor, selecciona un plan primero');
+            return;
+        }
+        
+        const plan = this.selectedPlan;
+        const price = this.planPrices[plan];
+        const bookCount = this.getBookCount(plan);
+        const name = this.childName.value || 'Niño';
+        const age = this.childAge.value || '5';
+        
+        // Collect form data
+        const formData = {
+            plan: plan,
+            price: price,
+            bookCount: bookCount,
+            childName: name,
+            childAge: age,
+            bookTitle: this.bookTitle.value || 'Historia personalizada',
+            bookDescription: this.bookDescription.value || 'Aventura mágica personalizada'
+        };
+        
+        // Show loading state
+        this.paypalBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm16 4h-4v12h-2v-2H14v-4h4V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2V8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zM5.3 6.3a.5.5 0 0 1 .8.6l-3.5 3.5a.5.5 0 0 1-.8-.6l3.5-3.5zM8.8 5.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM5.8 8.8a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM8.3 11.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM6.8 14.3a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM10.3 17.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM13.8 14.3a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM16.3 17.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM13.8 5.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM16.8 11.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM17.3 8.8a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM15.3 6.3a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5z"/></svg>
+            Procesando...
+        `;
+        this.paypalBtn.disabled = true;
+        
+        // In a real implementation, this would call PayPal API
+        // For now, we'll simulate the payment and show a success message
+        setTimeout(() => {
+            this.showPaymentSuccess(formData);
+        }, 2000);
+    },
+    
+    showPaymentSuccess(formData) {
+        const successMessage = `
+            <div class="payment-success" style="
+                background: linear-gradient(135deg, #d1fd8d, #a7f3d0);
+                border: 2px solid #22c55e;
+                border-radius: 16px;
+                padding: 24px;
+                text-align: center;
+                margin: 20px 0;
+                animation: slideIn 0.3s ease;
+            ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+                <h3 style="color: #1e1b4b; margin: 12px 0 8px;">¡Gracias por tu pedido!</h3>
+                <p style="color: #334155; margin-bottom: 16px;">Tu pago fue procesado exitosamente.</p>
+                <p style="color: #334155; font-size: 14px;">
+                    Pedido:<br>
+                    <strong>Plan: ${formData.plan}</strong><br>
+                    <strong>Libros: ${formData.bookCount}</strong><br>
+                    <strong>Nombre: ${formData.childName}</strong> (${formData.childAge} años)<br>
+                    <strong>Título: ${formData.bookTitle}</strong>
+                </p>
+                <p style="color: #334155; font-size: 12px; margin-top: 16px;">
+                    En recibirás un enlace de descarga en tu correo en los próximos 24-48 horas.
+                </p>
+            </div>
+        `;
+        
+        // Insert success message after form
+        const formSection = document.querySelector('.order-form');
+        if (formSection) {
+            formSection.insertAdjacentHTML('afterend', successMessage);
+            
+            // Remove form after a delay
+            setTimeout(() => {
+                formSection.remove();
+            }, 3000);
+        }
+    }
+};
+
+PaymentForm.init();

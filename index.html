@@ -1094,7 +1094,124 @@
                 </div>
             </div>
         </div>
+        <!-- ========== PAGO Y PEDIDO DIRECTO ========== -->
+    <section class="order-section" id="order-section">
+      <div class="container">
+        <div class="order-section-header fade-in">
+          <span class="section-tag">Compra Segura</span>
+          <h2 class="section-title">Crea y Pedido Tu Libro Personalizado</h2>
+          <p class="section-subdescription">Selecciona tu plan, elige los libros y completa el formulario con la información de tu niño/a.</p>
+        </div>
+
+        <div class="order-content">
+          <!-- Plan Selection -->
+          <div class="plan-selector fade-in" id="plan-selector">
+            <h3 class="plan-selector-title">Selecciona tu Plan</h3>
+            <div class="plan-grid">
+              <article class="plan-card" data-plan="basico" tabindex="0" role="button" aria-label="Plan Básico - $9.99">
+                <div class="plan-ribbon" style="background: linear-gradient(135deg, #3b82f6, #6366f1);"></div>
+                <div class="plan-body">
+                  <h3 class="plan-name">Básico</h3>
+                  <span class="plan-tag">Primera Aventura</span>
+                  <p class="plan-desc">1 libro digital (24 páginas)</p>
+                  <div class="plan-amount">
+                    <span class="price gradient-text-blue">$9.99</span>
+                    <span class="price-period">por ebook</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="plan-card pricing-card-featured" data-plan="familiar" tabindex="0" role="button" aria-label="Plan Familiar - $24.99">
+                <div class="plan-ribbon" style="background: linear-gradient(135deg, #ec4899, #f43f5e, #d946ef);"></div>
+                <span class="plan-popular-badge">Más Popular</span>
+                <div class="plan-body">
+                  <h3 class="plan-name">Familiar</h3>
+                  <span class="plan-tag">Paquete Completo</span>
+                  <p class="plan-desc">3 libros digitales (24 pág. c/u)</p>
+                  <div class="plan-amount">
+                    <span class="price gradient-text-pink">$24.99</span>
+                    <span class="price-period">3 ebooks</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="plan-card" data-plan="premium" tabindex="0" role="button" aria-label="Plan Premium - $39.99">
+                <div class="plan-ribbon" style="background: linear-gradient(135deg, #eab308, #f97316);"></div>
+                <div class="plan-body">
+                  <h3 class="plan-name">Premium</h3>
+                  <span class="plan-tag">Colección Mágica</span>
+                  <p class="plan-desc">5 libros digitales personalizados</p>
+                  <div class="plan-amount">
+                    <span class="price gradient-text-warm">$39.99</span>
+                    <span class="price-period">5 ebooks</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Form Section -->
+          <div class="order-form" id="order-form" style="display: block;">
+            <div class="form-section">
+              <h3 class="form-title">Información del Niño/A</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="child-name" class="form-label">Nombre del Niño</label>
+                  <input type="text" id="child-name" class="form-input" placeholder="Ej: Mateo" required>
+                </div>
+                <div class="form-group">
+                  <label for="child-age" class="form-label">Edad</label>
+                  <input type="number" id="child-age" class="form-input" min="0" max="12" placeholder="Ej: 5" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3 class="form-title">Detalles del Libro</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="book-title" class="form-label">Título o Tema</label>
+                  <input type="text" id="book-title" class="form-input" placeholder="Ej: Aventura en el Espacio" required>
+                </div>
+                <div class="form-group">
+                  <label for="book-description" class="form-label">Descripción</label>
+                  <textarea id="book-description" class="form-textarea" rows="3" placeholder="Describe la aventura, poderes, amigos, etc."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3 class="form-title">Plan y Precio</h3>
+              <div class="plan-summary">
+                <div class="plan-info">
+                  <span class="plan-name"></span>
+                  <span class="plan-price">$0.00</span>
+                </div>
+                <div class="plan-books">
+                  <span>Libros:</span>
+                  <span class="plan-books-count">0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Book Selection -->
+            <div class="book-selector fade-in" id="book-selector" style="display: block;">
+              <h3 class="form-title">Selecciona los Libros</h3>
+              <div class="book-grid">
+                <!-- Books will be populated by JavaScript -->
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-block" id="paypal-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm16 4h-4v12h-2v-2H14v-4h4V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2V8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zM5.3 6.3a.5.5 0 0 1 .8.6l-3.5 3.5a.5.5 0 0 1-.8-.6l3.5-3.5zM8.8 5.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM5.8 8.8a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM8.3 11.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM6.8 14.3a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM10.3 17.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM13.8 14.3a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM16.3 17.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM13.8 5.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM16.8 11.5a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM17.3 8.8a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5zM15.3 6.3a.5.5 0 0 1 .6.8l-3.5 3.5a.5.5 0 0 1-.6-.8l3.5-3.5z"/></svg>
+              Pagar con PayPal - $0.00
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
+
+</section>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer" id="footer">
