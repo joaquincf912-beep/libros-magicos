@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+    <!-- ========== SEGURIDAD & CSP ========== -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.paypal.com https://www.sandbox.paypal.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' https://www.paypalobjects.com data:; frame-src https://www.paypal.com https://www.sandbox.paypal.com; connect-src https://www.paypal.com https://www.sandbox.paypal.com;">
+    
+    <!-- ========== META BÁSICOS ========== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- ========== SEO TÍTULO Y DESCRIPCIÓN ========== -->
+    <title>Finalizar Pedido | Libros Digitales Personalizados para Niños - Libros Mágicos</title>
+    <meta name="description" content="Personaliza el libro digital de tu hijo/a y completa tu pedido de forma rápida y 100% segura con PayPal. Descarga digital instantánea en alta resolución.">
+    <meta name="keywords" content="comprar libro digital personalizado, checkout libros magicos, personalizar ebook ninos, libros infantiles personalizados, comprar cuentos infantiles paypal">
+    <meta name="author" content="TraccionWeb - Libros Mágicos">
+    <meta name="robots" content="index, follow">
+
+    <!-- ========== URL CANÓNICA ========== -->
+    <link rel="canonical" href="https://librosparaninos.traccionweb.com/order.html">
+
+    <!-- ========== OPEN GRAPH (FACEBOOK/SOCIAL) ========== -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Personaliza y Ordena tu Libro Digital | Libros Mágicos">
+    <meta property="og:description" content="Crea historias digitales únicas donde tu hijo/a es el protagonista. Completa los detalles y descarga al instante.">
+    <meta property="og:url" content="https://librosparaninos.traccionweb.com/order.html">
+    <meta property="og:site_name" content="Libros Mágicos by TraccionWeb">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image" content="https://librosparaninos.traccionweb.com/images/cover-superhero.jpg">
+
+    <!-- ========== TWITTER CARD ========== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Personaliza tu Libro Digital | Libros Mágicos">
+    <meta name="twitter:description" content="Crea historias digitales únicas donde tu hijo/a es el protagonista. Descarga instantánea con PayPal.">
+    <meta name="twitter:image" content="https://librosparaninos.traccionweb.com/images/cover-superhero.jpg">
+
+    <!-- ========== THEME & PWA ========== -->
+    <meta name="theme-color" content="#ec4899">
+    <meta name="msapplication-TileColor" content="#ec4899">
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+
+    <!-- ========== GOOGLE FONTS ========== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- ========== STYLESHEETS ========== -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="order.css">
+
+    <!-- ========== PAYPAL JS SDK ========== -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AWsaRUnJ7rxP4ZEkJXxRG-Xe5VWptfmuKbQu13P4kkbwyKV8zRIsZV7rHiYlbeArxgIrzNDtBILh9HL5&currency=USD"></script>
+</head>
+<body>
+    <!-- ========== ANIMATED BACKGROUND ========== -->
+    <div class="bg-scene" aria-hidden="true">
+        <div class="bg-gradient"></div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+        <div class="sparkle sparkle-1">✦</div>
+        <div class="sparkle sparkle-2">✦</div>
+        <div class="sparkle sparkle-3">✦</div>
+        <div class="sparkle sparkle-4">✦</div>
+        <div class="sparkle sparkle-5">✦</div>
+        <div class="sun-glow"></div>
+        <div class="sun-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        </div>
+    </div>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo" aria-label="Libros Mágicos - Inicio">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
+                </div>
+                <span class="logo-text">Libros Mágicos</span>
+            </a>
+            
+            <div class="nav-links">
+                <a href="index.html" class="nav-link" data-i18n="nav_home">Inicio</a>
+                <a href="index.html#features" class="nav-link" data-i18n="nav_services">Servicios</a>
+                <a href="index.html#libros" class="nav-link" data-i18n="nav_books">Libros</a>
+                <a href="index.html#preview" class="nav-link" data-i18n="nav_preview">Vista Previa</a>
+                <a href="index.html#precios" class="nav-link" data-i18n="nav_pricing">Precios</a>
+                <a href="index.html#faq" class="nav-link" data-i18n="nav_faq">FAQ</a>
+            </div>
+
+            <!-- LANGUAGE SWITCHER (ES, EN, PT, FR) -->
+            <div class="lang-switcher" id="lang-switcher-wrap">
+                <button type="button" class="lang-toggle" id="lang-toggle-btn" aria-label="Cambiar idioma / Switch language" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <span class="lang-current" id="lang-current-code">ES</span>
+                </button>
+                <div class="lang-menu" id="lang-dropdown-menu" role="menu">
+                    <button type="button" class="lang-option lang-option-btn active" data-lang="es" role="menuitem">
+                        <span class="lang-flag">🇪🇸</span>
+                        <span class="lang-name">Español</span>
+                        <span class="lang-check">✓</span>
+                    </button>
+                    <button type="button" class="lang-option lang-option-btn" data-lang="en" role="menuitem">
+                        <span class="lang-flag">🇺🇸</span>
+                        <span class="lang-name">English</span>
+                        <span class="lang-check">✓</span>
+                    </button>
+                    <button type="button" class="lang-option lang-option-btn" data-lang="pt" role="menuitem">
+                        <span class="lang-flag">🇧🇷</span>
+                        <span class="lang-name">Português</span>
+                        <span class="lang-check">✓</span>
+                    </button>
+                    <button type="button" class="lang-option lang-option-btn" data-lang="fr" role="menuitem">
+                        <span class="lang-flag">🇫🇷</span>
+                        <span class="lang-name">Français</span>
+                        <span class="lang-check">✓</span>
+                    </button>
+                </div>
+            </div>
+
+            <a href="https://wa.me/573026456024?text=Hola,%20tengo%20una%20pregunta%20sobre%20mi%20pedido%20de%20Libros%20M%C3%A1gicos" target="_blank" rel="noopener noreferrer" class="nav-cta" id="nav-cta">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 0 0 .611.611l4.458-1.495A11.96 11.96 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.336 0-4.512-.728-6.299-1.969l-.44-.312-2.647.888.888-2.647-.312-.44A9.965 9.965 0 0 1 2 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                <span data-i18n="nav_contact">Contactar</span>
+            </a>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menú">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html" class="mobile-link" data-i18n="nav_home">Inicio</a>
+            <a href="index.html#features" class="mobile-link" data-i18n="nav_services">Servicios</a>
+            <a href="index.html#libros" class="mobile-link" data-i18n="nav_books">Libros</a>
+            <a href="index.html#preview" class="mobile-link" data-i18n="nav_preview">Vista Previa</a>
+            <a href="index.html#precios" class="mobile-link" data-i18n="nav_pricing">Precios</a>
+            <a href="index.html#faq" class="mobile-link" data-i18n="nav_faq">FAQ</a>
+            <a href="https://wa.me/573026456024" target="_blank" rel="noopener noreferrer" class="mobile-cta" data-i18n="nav_contact">Contactar por WhatsApp</a>
+        </div>
+    </nav>
+
+    <!-- ========== MAIN CHECKOUT PAGE CONTENT ========== -->
+    <main class="checkout-main">
+        <!-- HEADER HERO -->
+        <header class="checkout-hero">
+            <div class="container">
+                <span class="checkout-badge" data-i18n="checkout_badge">✨ Tu Aventura Mágica Comienza Aquí</span>
+                <h1 class="checkout-title" data-i18n="checkout_title">Personaliza y Ordena tu Libro Digital</h1>
+                <p class="checkout-subtitle" data-i18n="checkout_subtitle">Crea una historia inolvidable donde tu pequeño/a es el protagonista. Descarga digital instantánea en PDF.</p>
+
+                <!-- STEP PROGRESS BAR -->
+                <div class="checkout-steps" aria-label="Progreso del pedido">
+                    <div class="step-item active">
+                        <span class="step-num">1</span>
+                        <span class="step-title" data-i18n="step_1_title">Elige tu Plan</span>
+                    </div>
+                    <div class="step-divider active"></div>
+                    <div class="step-item active">
+                        <span class="step-num">2</span>
+                        <span class="step-title" data-i18n="step_2_title">Personalización</span>
+                    </div>
+                    <div class="step-divider active"></div>
+                    <div class="step-item active">
+                        <span class="step-num">3</span>
+                        <span class="step-title" data-i18n="step_3_title">Pago Seguro</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CHECKOUT GRID -->
+        <div class="checkout-container">
+            <div class="checkout-layout">
+                <!-- LEFT COLUMN: FORM & SELECTION -->
+                <div class="checkout-content">
+
+                    <!-- STEP 1: PLAN SELECTION -->
+                    <section class="checkout-card" id="plan-selection-section">
+                        <div class="checkout-card-header">
+                            <div class="header-icon-badge">📦</div>
+                            <div>
+                                <h2 data-i18n="plan_section_title">1. Selecciona tu Plan</h2>
+                                <p data-i18n="plan_section_sub">Elige la opción perfecta para tu familia. Puedes cambiarlo en cualquier momento.</p>
+                            </div>
+                        </div>
+
+                        <div class="plan-cards-grid" role="radiogroup" aria-label="Planes disponibles">
+                            <!-- Básico: $9.99 -->
+                            <article class="order-plan-card" data-plan="basico" role="radio" aria-checked="false" tabindex="0">
+                                <div class="plan-select-radio"></div>
+                                <div class="order-plan-card-body">
+                                    <h3 class="order-plan-name" data-i18n="plan_basico_title">Básico</h3>
+                                    <span class="order-plan-tag" data-i18n="plan_basico_tag">Primera Aventura</span>
+                                    <p class="order-plan-desc" data-i18n="plan_basico_desc">1 libro digital (24 páginas en PDF de alta resolución)</p>
+                                    <div class="order-plan-price-wrap">
+                                        <span class="order-plan-price">$9.99</span>
+                                        <span class="order-plan-period" data-i18n="plan_basico_period">/ 1 ebook</span>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <!-- Familiar: $24.99 (Highlighted) -->
+                            <article class="order-plan-card featured-card selected" data-plan="familiar" role="radio" aria-checked="true" tabindex="0">
+                                <span class="plan-top-badge" data-i18n="plan_familiar_badge">⭐ Más Popular</span>
+                                <div class="plan-select-radio"></div>
+                                <div class="order-plan-card-body">
+                                    <h3 class="order-plan-name" data-i18n="plan_familiar_title">Familiar</h3>
+                                    <span class="order-plan-tag" data-i18n="plan_familiar_tag">Paquete Completo</span>
+                                    <p class="order-plan-desc" data-i18n="plan_familiar_desc">3 libros digitales personalizados (24 pág. c/u - ¡Ahorra 17%!)</p>
+                                    <div class="order-plan-price-wrap">
+                                        <span class="order-plan-price">$24.99</span>
+                                        <span class="order-plan-period" data-i18n="plan_familiar_period">/ 3 ebooks</span>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <!-- Premium: $39.99 -->
+                            <article class="order-plan-card" data-plan="premium" role="radio" aria-checked="false" tabindex="0">
+                                <div class="plan-select-radio"></div>
+                                <div class="order-plan-card-body">
+                                    <h3 class="order-plan-name" data-i18n="plan_premium_title">Premium</h3>
+                                    <span class="order-plan-tag" data-i18n="plan_premium_tag">Colección Mágica</span>
+                                    <p class="order-plan-desc" data-i18n="plan_premium_desc">5 libros digitales personalizados (¡Colección completa, ahorra 20%!)</p>
+                                    <div class="order-plan-price-wrap">
+                                        <span class="order-plan-price">$39.99</span>
+                                        <span class="order-plan-period" data-i18n="plan_premium_period">/ 5 ebooks</span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- STEP 2: CHILD INFO -->
+                    <section class="checkout-card" id="child-info-section">
+                        <div class="checkout-card-header">
+                            <div class="header-icon-badge">👶</div>
+                            <div>
+                                <h2 data-i18n="form_section_child_title">2. Información del Niño o Niña</h2>
+                                <p data-i18n="form_section_child_sub">Estos datos harán que las ilustraciones y relatos se adapten a tu pequeño/a.</p>
+                            </div>
+                        </div>
+
+                        <!-- Full name & Age -->
+                        <div class="form-grid-2">
+                            <div class="form-field">
+                                <label for="child-name" class="field-label">
+                                    <span data-i18n="label_child_name">Nombre completo del niño/a *</span>
+                                </label>
+                                <input type="text" id="child-name" name="child_name" class="custom-input" placeholder="Ej: Mateo García" data-i18n-ph="ph_child_name" required autocomplete="off">
+                            </div>
+
+                            <div class="form-field">
+                                <label for="child-age" class="field-label">
+                                    <span data-i18n="label_child_age">Edad *</span>
+                                </label>
+                                <select id="child-age" name="child_age" class="custom-select" required>
+                                    <option value="" disabled selected data-i18n="opt_select_age">Seleccionar edad</option>
+                                    <option value="1">1 año</option>
+                                    <option value="2">2 años</option>
+                                    <option value="3">3 años</option>
+                                    <option value="4">4 años</option>
+                                    <option value="5">5 años</option>
+                                    <option value="6">6 años</option>
+                                    <option value="7">7 años</option>
+                                    <option value="8">8 años</option>
+                                    <option value="9">9 años</option>
+                                    <option value="10">10 años</option>
+                                    <option value="11">11 años</option>
+                                    <option value="12">12 años</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Gender Buttons -->
+                        <div class="form-field" style="margin-bottom: 18px;">
+                            <label class="field-label">
+                                <span data-i18n="label_child_gender">Género *</span>
+                            </label>
+                            <input type="hidden" id="child-gender" name="child_gender" value="nino">
+                            <div class="gender-options" role="radiogroup" aria-label="Género del niño/a">
+                                <button type="button" class="gender-btn selected" data-value="nino">
+                                    <span data-i18n="gender_boy">👦 Niño</span>
+                                </button>
+                                <button type="button" class="gender-btn" data-value="nina">
+                                    <span data-i18n="gender_girl">👧 Niña</span>
+                                </button>
+                                <button type="button" class="gender-btn" data-value="otro">
+                                    <span data-i18n="gender_na">🌟 No especificar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Hair, Skin tone & Eye color -->
+                        <div class="form-grid-3">
+                            <!-- Hair color -->
+                            <div class="form-field">
+                                <label for="hair-color" class="field-label">
+                                    <span data-i18n="label_hair_color">Color de cabello *</span>
+                                </label>
+                                <select id="hair-color" name="hair_color" class="custom-select" required>
+                                    <option value="" disabled selected data-i18n="opt_select_hair">Seleccionar color</option>
+                                    <option value="negro" data-i18n="hair_black">Negro</option>
+                                    <option value="castano" data-i18n="hair_brown">Castaño</option>
+                                    <option value="rubio" data-i18n="hair_blonde">Rubio</option>
+                                    <option value="pelirrojo" data-i18n="hair_red">Pelirrojo</option>
+                                    <option value="otro" data-i18n="hair_other">Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- Skin tone -->
+                            <div class="form-field">
+                                <label for="skin-tone" class="field-label">
+                                    <span data-i18n="label_skin_tone">Tono de piel *</span>
+                                </label>
+                                <select id="skin-tone" name="skin_tone" class="custom-select" required>
+                                    <option value="muy_claro" data-i18n="skin_very_light">Muy Claro</option>
+                                    <option value="claro" selected data-i18n="skin_light">Claro</option>
+                                    <option value="medio" data-i18n="skin_medium">Medio / Dorado</option>
+                                    <option value="moreno" data-i18n="skin_tan">Moreno</option>
+                                    <option value="oscuro" data-i18n="skin_dark">Oscuro</option>
+                                </select>
+                            </div>
+
+                            <!-- Eye color -->
+                            <div class="form-field">
+                                <label for="eye-color" class="field-label">
+                                    <span data-i18n="label_eye_color">Color de ojos *</span>
+                                </label>
+                                <select id="eye-color" name="eye_color" class="custom-select" required>
+                                    <option value="" disabled selected data-i18n="opt_select_eye">Seleccionar ojos</option>
+                                    <option value="marron_oscuro" data-i18n="eye_dark_brown">Marrón oscuro</option>
+                                    <option value="marron_claro" data-i18n="eye_light_brown">Marrón claro</option>
+                                    <option value="castano" data-i18n="eye_hazel">Castaño</option>
+                                    <option value="verde" data-i18n="eye_green">Verde</option>
+                                    <option value="azul" data-i18n="eye_blue">Azul</option>
+                                    <option value="negro" data-i18n="eye_black">Negro</option>
+                                    <option value="miel" data-i18n="eye_honey">Miel</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Visual Swatches for Skin Tone -->
+                        <div class="skin-tone-container" aria-label="Muestras visuales de tono de piel">
+                            <span style="font-size: 12px; font-weight: 700; color: var(--gray-600); margin-right: 4px;">Tono:</span>
+                            <div class="skin-swatch" style="background: #fce4d6;" data-value="muy_claro" data-label="Muy Claro" title="Muy Claro"></div>
+                            <div class="skin-swatch selected" style="background: #f7cca9;" data-value="claro" data-label="Claro" title="Claro"></div>
+                            <div class="skin-swatch" style="background: #e0ac69;" data-value="medio" data-label="Medio / Dorado" title="Medio"></div>
+                            <div class="skin-swatch" style="background: #c68642;" data-value="moreno" data-label="Moreno" title="Moreno"></div>
+                            <div class="skin-swatch" style="background: #8d5524;" data-value="oscuro" data-label="Oscuro" title="Oscuro"></div>
+                            <span class="skin-tone-label" id="skin-tone-current-label">Claro</span>
+                        </div>
+                    </section>
+
+                    <!-- STEP 3: STORY SELECTION -->
+                    <section class="checkout-card" id="story-selection-section">
+                        <div class="checkout-card-header">
+                            <div class="header-icon-badge">📖</div>
+                            <div>
+                                <h2 data-i18n="form_section_story_title">3. Selección de Historia</h2>
+                                <p data-i18n="form_section_story_sub">Elige la historia en la que tu hijo/a será el protagonista principal.</p>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="selected-story" name="selected_story" value="superheroe">
+
+                        <div class="stories-grid" role="radiogroup" aria-label="Historias disponibles">
+                            <!-- 1. Mi Super Aventura -->
+                            <article class="story-card selected" data-story="superheroe" role="radio" aria-checked="true" tabindex="0">
+                                <div class="story-img-wrap">
+                                    <img src="images/cover-superhero.jpg" alt="Mi Super Aventura" loading="lazy">
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title" data-i18n="story_1_title">Mi Super Aventura</h4>
+                                    <p class="story-desc" data-i18n="story_1_desc">¡El superhéroe que salva la ciudad con sus superpoderes!</p>
+                                </div>
+                                <div class="story-radio-badge">✓</div>
+                            </article>
+
+                            <!-- 2. Mi Princesa Favorita -->
+                            <article class="story-card" data-story="princesa" role="radio" aria-checked="false" tabindex="0">
+                                <div class="story-img-wrap">
+                                    <img src="images/cover-princess.jpg" alt="Mi Princesa Favorita" loading="lazy">
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title" data-i18n="story_2_title">Mi Princesa Favorita</h4>
+                                    <p class="story-desc" data-i18n="story_2_desc">La princesa más valiente y bondadosa del reino mágico.</p>
+                                </div>
+                                <div class="story-radio-badge">✓</div>
+                            </article>
+
+                            <!-- 3. Aventura en el Espacio -->
+                            <article class="story-card" data-story="espacio" role="radio" aria-checked="false" tabindex="0">
+                                <div class="story-img-wrap">
+                                    <img src="images/cover-space.jpg" alt="Aventura en el Espacio" loading="lazy">
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title" data-i18n="story_3_title">Aventura en el Espacio</h4>
+                                    <p class="story-desc" data-i18n="story_3_desc">Un viaje astronómico a la Luna y galaxias lejanas.</p>
+                                </div>
+                                <div class="story-radio-badge">✓</div>
+                            </article>
+
+                            <!-- 4. El Bosque Encantado -->
+                            <article class="story-card" data-story="bosque" role="radio" aria-checked="false" tabindex="0">
+                                <div class="story-img-wrap">
+                                    <img src="images/cover-forest.jpg" alt="El Bosque Encantado" loading="lazy">
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title" data-i18n="story_4_title">El Bosque Encantado</h4>
+                                    <p class="story-desc" data-i18n="story_4_desc">Amistades mágicas con animales y criaturas del bosque.</p>
+                                </div>
+                                <div class="story-radio-badge">✓</div>
+                            </article>
+
+                            <!-- 5. Mi Primer Libro de Colores -->
+                            <article class="story-card" data-story="colores" role="radio" aria-checked="false" tabindex="0">
+                                <div class="story-img-wrap">
+                                    <img src="images/cover-colors.jpg" alt="Mi Primer Libro de Colores" loading="lazy">
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title" data-i18n="story_5_title">Mi Primer Libro de Colores</h4>
+                                    <p class="story-desc" data-i18n="story_5_desc">Diversión y aprendizaje interactivo de formas y colores (0-3 años).</p>
+                                </div>
+                                <div class="story-radio-badge">✓</div>
+                            </article>
+
+                            <!-- 6. La Receta Mágica -->
+                            <article class="story-card" data-story="receta" role="radio" aria-checked="false" tabindex="0">
+                                <div class="story-img-wrap">
+                                    <img src="images/cover-recipe.jpg" alt="La Receta Mágica" loading="lazy">
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title" data-i18n="story_6_title">La Receta Mágica</h4>
+                                    <p class="story-desc" data-i18n="story_6_desc">El chef estrella cocinando platillos fantásticos y llenos de magia.</p>
+                                </div>
+                                <div class="story-radio-badge">✓</div>
+                            </article>
+
+                            <!-- 7. Historia Personalizada -->
+                            <article class="story-card" data-story="personalizada" role="radio" aria-checked="false" tabindex="0" style="grid-column: 1 / -1;">
+                                <div class="story-img-wrap">
+                                    <div class="story-custom-icon">✨</div>
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title" data-i18n="story_custom_title">Historia Personalizada</h4>
+                                    <p class="story-desc" data-i18n="story_custom_desc">¿Tienes una idea única? Diseñamos la historia que tú imagines.</p>
+                                </div>
+                                <div class="story-radio-badge">✓</div>
+                            </article>
+                        </div>
+
+                        <!-- Conditional Textarea for Historia Personalizada -->
+                        <div class="custom-story-box" id="custom-story-box">
+                            <label for="custom-story-desc" class="field-label">
+                                <span data-i18n="label_custom_story_desc">Describe tu historia personalizada *</span>
+                            </label>
+                            <textarea id="custom-story-desc" name="custom_story_desc" class="custom-textarea" rows="3" placeholder="Cuéntanos la temática, amigos, mascotas o el sueño que quieras incluir..." data-i18n-ph="ph_custom_story_desc"></textarea>
+                        </div>
+
+                        <!-- Bundle tip for multi-book packages -->
+                        <div class="bundle-tip-box" id="bundle-tip-box">
+                            <span id="bundle-tip-text" data-i18n="bundle_tip_familiar">💡 Genial: Tu plan Familiar incluye 3 ebooks. Te contactaremos luego de tu compra para definir tus 2 libros adicionales.</span>
+                        </div>
+                    </section>
+
+                    <!-- STEP 4: EXTRAS & DEDICATION -->
+                    <section class="checkout-card" id="extras-section">
+                        <div class="checkout-card-header">
+                            <div class="header-icon-badge">💌</div>
+                            <div>
+                                <h2 data-i18n="form_section_extras_title">4. Extras y Dedicatoria</h2>
+                                <p data-i18n="form_section_extras_sub">Opcional: Añade un mensaje que quedará impreso en la primera página para siempre.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-field" style="margin-bottom: 18px;">
+                            <label for="dedication" class="field-label">
+                                <span data-i18n="label_dedication">Mensaje de dedicatoria (opcional)</span>
+                            </label>
+                            <textarea id="dedication" name="dedication" class="custom-textarea" rows="3" placeholder="Ej: Para Mateo con todo el amor de tus papás en tu cumpleaños..." data-i18n-ph="ph_dedication"></textarea>
+                            <span class="field-hint">Aparecerá en la página #1 de tu libro personalizado.</span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="special-instructions" class="field-label">
+                                <span data-i18n="label_special_instructions">Instrucciones especiales o comentarios (opcional)</span>
+                            </label>
+                            <textarea id="special-instructions" name="special_instructions" class="custom-textarea" rows="2" placeholder="Ej: Tiene un perrito blanco llamado Toby que le encanta ladrar..." data-i18n-ph="ph_special_instructions"></textarea>
+                        </div>
+                    </section>
+
+                    <!-- STEP 5: CONTACT & DIGITAL DELIVERY -->
+                    <section class="checkout-card" id="contact-section">
+                        <div class="checkout-card-header">
+                            <div class="header-icon-badge">📬</div>
+                            <div>
+                                <h2 data-i18n="form_section_contact_title">5. Datos de Contacto y Envío Digital</h2>
+                                <p data-i18n="form_section_contact_sub">Tu libro digital personalizado en PDF se enviará directamente a este correo.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-field">
+                                <label for="parent-name" class="field-label">
+                                    <span data-i18n="label_parent_name">Nombre completo del padre/madre/tutor *</span>
+                                </label>
+                                <input type="text" id="parent-name" name="parent_name" class="custom-input" placeholder="Ej: Carlos García" data-i18n-ph="ph_parent_name" required autocomplete="name">
+                            </div>
+
+                            <div class="form-field">
+                                <label for="parent-email" class="field-label">
+                                    <span data-i18n="label_parent_email">Correo electrónico * (recibirás el libro aquí)</span>
+                                </label>
+                                <input type="email" id="parent-email" name="parent_email" class="custom-input" placeholder="tu-correo@ejemplo.com" data-i18n-ph="ph_parent_email" required autocomplete="email">
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-field">
+                                <label for="parent-phone" class="field-label">
+                                    <span data-i18n="label_parent_phone">Teléfono / WhatsApp con código de país (opcional)</span>
+                                </label>
+                                <input type="tel" id="parent-phone" name="parent_phone" class="custom-input" placeholder="Ej: +57 300 123 4567" data-i18n-ph="ph_parent_phone" autocomplete="tel">
+                            </div>
+
+                            <div class="form-field">
+                                <label for="parent-country" class="field-label">
+                                    <span data-i18n="label_parent_country">País *</span>
+                                </label>
+                                <select id="parent-country" name="parent_country" class="custom-select" required>
+                                    <option value="" disabled selected data-i18n="opt_select_country">Seleccionar país</option>
+                                    <option value="CO">Colombia 🇨🇴</option>
+                                    <option value="MX">México 🇲🇽</option>
+                                    <option value="ES">España 🇪🇸</option>
+                                    <option value="US">Estados Unidos 🇺🇸</option>
+                                    <option value="AR">Argentina 🇦🇷</option>
+                                    <option value="CL">Chile 🇨🇱</option>
+                                    <option value="PE">Perú 🇵🇪</option>
+                                    <option value="VE">Venezuela 🇻🇪</option>
+                                    <option value="EC">Ecuador 🇪🇨</option>
+                                    <option value="BR">Brasil 🇧🇷</option>
+                                    <option value="FR">Francia 🇫🇷</option>
+                                    <option value="PT">Portugal 🇵🇹</option>
+                                    <option value="IT">Italia 🇮🇹</option>
+                                    <option value="DE">Alemania 🇩🇪</option>
+                                    <option value="GB">Reino Unido 🇬🇧</option>
+                                    <option value="UY">Uruguay 🇺🇾</option>
+                                    <option value="PY">Paraguay 🇵🇾</option>
+                                    <option value="BO">Bolivia 🇧🇴</option>
+                                    <option value="CR">Costa Rica 🇨🇷</option>
+                                    <option value="PA">Panamá 🇵🇦</option>
+                                    <option value="DO">República Dominicana 🇩🇴</option>
+                                    <option value="GT">Guatemala 🇬🇹</option>
+                                    <option value="CA">Canadá 🇨🇦</option>
+                                    <option value="OTHER">Otro país 🌍</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- RIGHT COLUMN: STICKY ORDER SUMMARY & PAYMENT -->
+                <aside class="order-sidebar">
+                    <div class="summary-card">
+                        <div class="summary-card-header">
+                            <h3 data-i18n="summary_title">Resumen de tu Pedido</h3>
+                            <span class="summary-plan-badge" id="summary-plan-badge">Familiar (3 Ebooks)</span>
+                        </div>
+
+                        <!-- Live Book Preview -->
+                        <div class="summary-preview-box">
+                            <div class="preview-thumb" id="summary-preview-img-wrap">
+                                <img src="images/cover-superhero.jpg" alt="Portada de libro" class="preview-img">
+                            </div>
+                            <div class="preview-details">
+                                <div class="preview-story-name" id="summary-story-name">Mi Super Aventura</div>
+                                <div class="preview-child-name" id="summary-child-name" data-i18n="summary_unnamed">(Por definir)</div>
+                                <div class="preview-meta">PDF Digital de Alta Calidad</div>
+                            </div>
+                        </div>
+
+                        <!-- Itemized List -->
+                        <div class="summary-details-list">
+                            <div class="summary-row">
+                                <span data-i18n="summary_plan_label">Plan seleccionado:</span>
+                                <span class="bold" id="summary-plan-name">Plan Familiar (3 Ebooks)</span>
+                            </div>
+                            <div class="summary-row">
+                                <span data-i18n="summary_format_label">Formato de entrega:</span>
+                                <span data-i18n="summary_format_val">Ebook Digital en PDF HD</span>
+                            </div>
+                            <div class="summary-row">
+                                <span data-i18n="summary_delivery_label">Tiempo de entrega:</span>
+                                <span data-i18n="summary_delivery_val" style="color: var(--pink-600); font-weight: 700;">Inmediata por Email</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-row">
+                                <span data-i18n="summary_subtotal">Subtotal:</span>
+                                <span id="summary-subtotal-val">$24.99</span>
+                            </div>
+                            <div class="summary-row discount">
+                                <span data-i18n="summary_discount">Descuento especial:</span>
+                                <span id="summary-discount-val" data-i18n="summary_discount_val">-$0.00 (Incluido)</span>
+                            </div>
+                            <div class="summary-total-row">
+                                <span class="summary-total-label" data-i18n="summary_total">Total a Pagar</span>
+                                <span class="summary-total-amount" id="summary-total-val">$24.99 USD</span>
+                            </div>
+                        </div>
+
+                        <div class="delivery-guarantee">
+                            <span class="delivery-icon">⚡</span>
+                            <span data-i18n="delivery_badge_text">Descarga directa en PDF tras procesamiento</span>
+                        </div>
+
+                        <!-- PayPal Button Section -->
+                        <div class="paypal-wrapper">
+                            <div class="paypal-btn-title">
+                                <span>💳</span>
+                                <span data-i18n="payment_method_title">Pagar con PayPal o Tarjeta</span>
+                            </div>
+
+                            <!-- Alert Box for Validation -->
+                            <div class="form-alert-msg" id="form-alert-msg" role="alert" data-i18n="validation_error_msg">
+                                ⚠️ Por favor completa los campos obligatorios marcados con * antes de continuar al pago.
+                            </div>
+
+                            <!-- PayPal Smart Buttons Container -->
+                            <div id="paypal-button-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- SECURITY TRUST BADGES -->
+                    <div class="security-card">
+                        <div class="security-card-title">
+                            <span>🛡️</span>
+                            <span data-i18n="security_title">Compra 100% Protegida</span>
+                        </div>
+                        <div class="trust-badges-grid">
+                            <div class="trust-badge-item">
+                                <span class="trust-badge-icon">🔒</span>
+                                <span data-i18n="trust_1">Pago 100% Seguro</span>
+                            </div>
+                            <div class="trust-badge-item">
+                                <span class="trust-badge-icon">🛡️</span>
+                                <span data-i18n="trust_2">Protección al Comprador PayPal</span>
+                            </div>
+                            <div class="trust-badge-item">
+                                <span class="trust-badge-icon">✅</span>
+                                <span data-i18n="trust_3">Cifrado SSL 256-bit</span>
+                            </div>
+                            <div class="trust-badge-item">
+                                <span class="trust-badge-icon">📧</span>
+                                <span data-i18n="trust_4">Confirmación por Email</span>
+                            </div>
+                            <div class="trust-badge-item">
+                                <span class="trust-badge-icon">🔐</span>
+                                <span data-i18n="trust_5">No almacenamos datos de pago</span>
+                            </div>
+                        </div>
+                        <p class="guarantee-note" data-i18n="guarantee_note">
+                            🌟 Garantía de satisfacción total: Si deseas algún ajuste en la dedicatoria o historia, lo realizamos sin costo.
+                        </p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== SUCCESS MODAL ========== -->
+    <div class="modal-overlay" id="success-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-success-title">
+        <div class="success-modal">
+            <div class="modal-celebration-icon">🎉</div>
+            <h2 class="modal-title" id="modal-success-title" data-i18n="modal_title">¡Pago Confirmado con Éxito!</h2>
+            <p class="modal-text" data-i18n="modal_text">¡Muchas gracias! Hemos recibido tu pago correctamente y nuestro taller mágico ha comenzado a escribir e ilustrar el libro.</p>
+
+            <div class="modal-receipt-box">
+                <div class="receipt-item">
+                    <span data-i18n="modal_item_order">N° de Orden PayPal:</span>
+                    <span id="modal-receipt-id">ORD-123456</span>
+                </div>
+                <div class="receipt-item">
+                    <span data-i18n="modal_item_plan">Plan:</span>
+                    <span id="modal-receipt-plan">Plan Familiar</span>
+                </div>
+                <div class="receipt-item">
+                    <span data-i18n="modal_item_child">Protagonista:</span>
+                    <span id="modal-receipt-child">Mateo</span>
+                </div>
+                <div class="receipt-item">
+                    <span data-i18n="modal_item_email">Enviado a:</span>
+                    <span id="modal-receipt-email">correo@ejemplo.com</span>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <a href="https://wa.me/573026456024" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-chat" id="modal-wa-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 0 0 .611.611l4.458-1.495A11.96 11.96 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.336 0-4.512-.728-6.299-1.969l-.44-.312-2.647.888.888-2.647-.312-.44A9.965 9.965 0 0 1 2 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                    <span data-i18n="modal_btn_wa">Escríbenos por WhatsApp</span>
+                </a>
+                <a href="index.html" class="btn btn-glass" id="modal-close-btn" data-i18n="modal_btn_home">Volver a Libros Mágicos</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FOOTER (SAME AS INDEX.HTML) ========== -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <div class="logo-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
+                        </div>
+                        <span>Libros Mágicos</span>
+                    </div>
+                    <p class="footer-desc">Creamos historias únicas y personalizadas donde tu hijo/a es el protagonista. Libros de alta calidad con envío a todo el mundo.</p>
+                </div>
+
+                <div class="footer-links-col">
+                    <h4 data-i18n="nav_services">Navegación</h4>
+                    <ul>
+                        <li><a href="index.html#hero" data-i18n="nav_home">Inicio</a></li>
+                        <li><a href="index.html#features" data-i18n="nav_services">Servicios</a></li>
+                        <li><a href="index.html#libros" data-i18n="nav_books">Libros</a></li>
+                        <li><a href="index.html#preview" data-i18n="nav_preview">Vista Previa</a></li>
+                        <li><a href="index.html#precios" data-i18n="nav_pricing">Precios</a></li>
+                        <li><a href="index.html#faq" data-i18n="nav_faq">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-col">
+                    <h4 data-i18n="nav_books">Libros</h4>
+                    <ul>
+                        <li><a href="index.html#book-superheroe" data-i18n="story_1_title">Mi Super Aventura</a></li>
+                        <li><a href="index.html#book-princesa" data-i18n="story_2_title">Mi Princesa Favorita</a></li>
+                        <li><a href="index.html#book-espacio" data-i18n="story_3_title">Aventura en el Espacio</a></li>
+                        <li><a href="index.html#book-bosque" data-i18n="story_4_title">El Bosque Encantado</a></li>
+                        <li><a href="index.html#book-colores" data-i18n="story_5_title">Mi Primer Libro de Colores</a></li>
+                        <li><a href="index.html#book-receta" data-i18n="story_6_title">La Receta Mágica</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-col">
+                    <h4 data-i18n="nav_contact">Contacto</h4>
+                    <ul>
+                        <li><a href="https://wa.me/573026456024" target="_blank" rel="noopener noreferrer">WhatsApp (+57 302 645 6024)</a></li>
+                        <li><a href="https://www.traccionweb.com" target="_blank" rel="noopener noreferrer">TraccionWeb.com</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Libros Mágicos by <a href="https://www.traccionweb.com" target="_blank" rel="noopener noreferrer">TraccionWeb</a>. Todos los derechos reservados.</p>
+                <p class="footer-seo-text">Libros digitales personalizados para niños | Ebooks infantiles | Cuentos digitales personalizados | Descarga instantánea mundial</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== JAVASCRIPT LOGIC ========== -->
+    <script src="order.js"></script>
+</body>
+</html>

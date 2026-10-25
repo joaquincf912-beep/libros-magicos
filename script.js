@@ -5,6 +5,27 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ========== LANGUAGE SWITCHER ==========
+    const langBtn = document.getElementById('lang-btn');
+    const langSwitcher = document.getElementById('lang-switcher');
+    if (langBtn && langSwitcher) {
+        langBtn.addEventListener('click', (e) => { e.stopPropagation(); langSwitcher.classList.toggle('open'); });
+        document.addEventListener('click', () => langSwitcher.classList.remove('open'));
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                const flags = { es: '🇪🇸 ES', en: '🇺🇸 EN', pt: '🇧🇷 PT', fr: '🇫🇷 FR' };
+                document.getElementById('lang-current').textContent = flags[lang] || flags.es;
+                langSwitcher.classList.remove('open');
+                localStorage.setItem('lang', lang);
+            });
+        });
+        const saved = localStorage.getItem('lang');
+        if (saved) {
+            const flags = { es: '🇪🇸 ES', en: '🇺🇸 EN', pt: '🇧🇷 PT', fr: '🇫🇷 FR' };
+            document.getElementById('lang-current').textContent = flags[saved] || flags.es;
+        }
+    }
     // ========== FLIPBOOK CONTROLLER ==========
     const FlipBook = {
         currentPage: 0,
