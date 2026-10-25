@@ -457,6 +457,9 @@ const PaymentForm = {
         this.childAge = document.getElementById('child-age');
         this.bookTitle = document.getElementById('book-title');
         this.bookDescription = document.getElementById('book-description');
+        this.parentPhone = document.getElementById('parent-phone');
+        this.bookGrid = document.querySelector('.book-grid');
+        this.selectedBooks = new Set();
         
         if (!this.planSelectors.length) return;
         
@@ -494,7 +497,9 @@ const PaymentForm = {
         };
         
         this.setupPlanSelection();
+        this.setupBookSelection();
         this.setupPayPalIntegration();
+        this.applyUrlParams();
     },
     
     setupPlanSelection() {
@@ -535,16 +540,31 @@ const PaymentForm = {
         
         // Update price display
         const price = this.planPrices[plan];
-        document.querySelector('.plan-price').textContent = `$${price.toFixed(2)}`;
-        document.querySelector('.plan-period').textContent = this.getPeriod(plan);
+        document.querySelector('.plan-summary .plan-price').textContent = `$${price.toFixed(2)}`;
+        document.querySelector('.plan-summary .plan-period').textContent = this.getPeriod(plan);
         
-        // Update plan info
-        const planName = document.querySelector('.plan-name');
+        // Update plan info (scoped to the summary, not the plan cards)
+        const planName = document.querySelector('.plan-summary .plan-name');
         planName.textContent = this.getPlanName(plan);
         
         // Update book count
         const bookCount = this.getBookCount(plan);
         document.querySelector('.plan-books-count').textContent = bookCount;
+        
+        // Update PayPal button label
+        const payLabel = document.querySelector('.paypal-btn-label');
+        if (payLabel) payLabel.textContent = `Pagar con PayPal - $${price.toFixed(2)}`;
+        
+        // Enforce the new plan's book limit on the current selection
+        if (this.bookGrid) {
+            const limit = parseInt(this.getBookCount(plan), 10);
+            while (this.selectedBooks.size > limit) {
+                const first = this.selectedBooks.values().next().value;
+                this.selectedBooks.delete(first);
+            }
+            this.syncBookOptions();
+            this.updateBookHint();
+        }
         
         // Update form description
         const formDesc = document.querySelector('.form-description');
@@ -583,6 +603,96 @@ const PaymentForm = {
         return counts[plan] || '1';
     },
     
+    setupBookSelection() {
+        if (!this.bookGrid) return;
+        
+        this.books = [
+            { id: 'superheroe', title: 'Mi Super Aventura' },
+            { id: 'princesa', title: 'Mi Princesa Favorita' },
+            { id: 'espacio', title: 'Aventura en el Espacio' },
+            { id: 'bosque', title: 'El Bosque Encantado' },
+            { id: 'colores', title: 'Mi Primer Libro de Colores' },
+            { id: 'receta', title: 'La Receta Mágica' }
+        ];
+        
+        this.bookGrid.innerHTML = this.books.map((book) => `
+            <button type="button" class="book-option" data-book="${book.id}" aria-pressed="false">
+                <span class="book-option-check">✓</span>
+                <span class="book-option-title">${book.title}</span>
+            </button>
+        `).join('');
+        
+        this.bookGrid.querySelectorAll('.book-option').forEach((btn) => {
+            btn.addEventListener('click', () => this.toggleBook(btn.dataset.book));
+        });
+        
+        const hint = document.querySelector('.book-hint');
+        if (hint && !hint.dataset.ready) {
+            hint.dataset.ready = '1';
+            this.updateBookHint();
+        }
+    },
+    
+    toggleBook(id) {
+        const limit = parseInt(this.getBookCount(this.selectedPlan), 10);
+        
+        if (this.selectedBooks.has(id)) {
+            this.selectedBooks.delete(id);
+        } else if (this.selectedBooks.size < limit) {
+            this.selectedBooks.add(id);
+        } else {
+            const t = window.LM_T || ((s) => s);
+            alert(t('Tu plan permite elegir hasta {limit} libro{s}. Cambia de plan o deselecciona uno primero.', { limit, s: limit > 1 ? 's' : '' }));
+            return;
+        }
+        
+        this.syncBookOptions();
+        this.updateBookHint();
+    },
+    
+    syncBookOptions() {
+        this.bookGrid.querySelectorAll('.book-option').forEach((btn) => {
+            const on = this.selectedBooks.has(btn.dataset.book);
+            btn.classList.toggle('selected', on);
+            btn.setAttribute('aria-pressed', String(on));
+        });
+    },
+    
+    updateBookHint() {
+        const hint = document.querySelector('.book-hint');
+        if (!hint) return;
+        const limit = this.getBookCount(this.selectedPlan);
+        const variants = {
+            '1': 'Puedes elegir hasta 1 libro de la colección — o cuéntanos tu propia idea abajo.',
+            '3': 'Puedes elegir hasta 3 libros de la colección — o cuéntanos tu propia idea abajo.',
+            '5': 'Puedes elegir hasta 5 libros de la colección — o cuéntanos tu propia idea abajo.'
+        };
+        hint.textContent = variants[limit] || variants['1'];
+    },
+    
+    applyUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        
+        const plan = params.get('plan');
+        if (plan && this.planPrices[plan]) {
+            this.selectPlan(plan);
+        }
+        
+        const libro = params.get('libro');
+        if (libro && this.books) {
+            const norm = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+            const match = this.books.find((b) => norm(b.title) === norm(libro));
+            if (match) {
+                this.selectedBooks.add(match.id);
+                this.syncBookOptions();
+                this.updateBookHint();
+                if (this.bookTitle && !this.bookTitle.value) {
+                    this.bookTitle.value = match.title;
+                }
+            }
+        }
+    },
+    
     setupPayPalIntegration() {
         if (!this.paypalBtn) return;
         
@@ -594,15 +704,31 @@ const PaymentForm = {
     
     processPayment() {
         if (!this.selectedPlan) {
-            alert('Por favor, selecciona un plan primero');
+            alert((window.LM_T || ((s) => s))('Por favor, selecciona un plan primero'));
+            return;
+        }
+        
+        // Validate required fields
+        const required = [
+            ['el nombre del niño/a', this.childName],
+            ['la edad', this.childAge],
+            ['tu teléfono / WhatsApp', this.parentPhone],
+            ['el título o tema del libro', this.bookTitle]
+        ];
+        const missing = required.filter(([, el]) => el && !el.value.trim());
+        if (missing.length) {
+            const t = window.LM_T || ((s) => s);
+            const fields = missing.map(([label]) => t(label)).join(', ');
+            alert(t('Por favor completa: {fields}', { fields }));
+            missing[0][1].focus();
             return;
         }
         
         const plan = this.selectedPlan;
         const price = this.planPrices[plan];
         const bookCount = this.getBookCount(plan);
-        const name = this.childName.value || 'Niño';
-        const age = this.childAge.value || '5';
+        const name = this.childName.value;
+        const age = this.childAge.value;
         
         // Collect form data
         const formData = {
@@ -611,6 +737,11 @@ const PaymentForm = {
             bookCount: bookCount,
             childName: name,
             childAge: age,
+            phone: this.parentPhone.value,
+            selectedBooks: Array.from(this.selectedBooks).map((id) => {
+                const book = this.books.find((b) => b.id === id);
+                return book ? book.title : id;
+            }),
             bookTitle: this.bookTitle.value || 'Historia personalizada',
             bookDescription: this.bookDescription.value || 'Aventura mágica personalizada'
         };
@@ -645,9 +776,10 @@ const PaymentForm = {
                 <p style="color: #334155; margin-bottom: 16px;">Tu pago fue procesado exitosamente.</p>
                 <p style="color: #334155; font-size: 14px;">
                     Pedido:<br>
-                    <strong>Plan: ${formData.plan}</strong><br>
-                    <strong>Libros: ${formData.bookCount}</strong><br>
+                    <strong>Plan: ${formData.plan} ($${formData.price.toFixed(2)})</strong><br>
+                    <strong>Libros: ${formData.bookCount}</strong>${formData.selectedBooks.length ? ` — ${formData.selectedBooks.join(', ')}` : ''}<br>
                     <strong>Nombre: ${formData.childName}</strong> (${formData.childAge} años)<br>
+                    <strong>Tel: ${formData.phone}</strong><br>
                     <strong>Título: ${formData.bookTitle}</strong>
                 </p>
                 <p style="color: #334155; font-size: 12px; margin-top: 16px;">
