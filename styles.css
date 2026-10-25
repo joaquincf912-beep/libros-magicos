@@ -562,6 +562,13 @@ ul, ol { list-style: none; }
   .page-content { min-height: 400px; padding: 16px; }
   .page-text-content { padding: 16px; }
   .traccionweb-link { flex-direction: column; align-items: flex-start; }
+  .flash-offer-inner { flex-direction: column; text-align: center; gap: 16px; padding: 16px; }
+  .flash-left { text-align: center; min-width: auto; }
+  .flash-urgency { justify-content: center; }
+  .flash-timer { justify-content: center; }
+  .flash-cta { width: 100%; justify-content: center; }
+  .social-proof { left: 10px; right: 10px; bottom: 10px; }
+  .social-proof-inner { max-width: 100%; padding: 12px 14px; gap: 10px; }
 }
 
 @media (max-width: 480px) {
@@ -579,9 +586,21 @@ ul, ol { list-style: none; }
   .page-paragraph { font-size: 13px; }
   .cta-buttons { flex-direction: column; }
   .btn-white, .btn-glass { width: 100%; justify-content: center; }
-  .flash-offer-inner { flex-direction: column; gap: 12px; }
-  .flash-timer { gap: 8px; }
-  .social-proof { left: 12px; right: 12px; bottom: 12px; }
+  .flash-offer { margin-bottom: 20px; border-radius: 16px; }
+  .flash-offer-inner { padding: 14px 12px; gap: 12px; }
+  .flash-headline { font-size: 15px; }
+  .flash-badge { padding: 3px 10px; }
+  .flash-badge-text { font-size: 9px; }
+  .timer-number { width: 40px; height: 40px; font-size: 17px; border-radius: 10px; }
+  .timer-dot { font-size: 18px; padding-bottom: 12px; }
+  .timer-unit { font-size: 8px; }
+  .flash-cta { padding: 12px 20px; font-size: 13px; border-radius: 10px; }
+  .social-proof { left: 8px; right: 8px; bottom: 8px; }
+  .social-proof-inner { padding: 10px 12px; border-radius: 14px; gap: 8px; }
+  .social-proof-icon { width: 36px; height: 36px; min-width: 36px; font-size: 18px; border-radius: 10px; }
+  .social-proof-text { font-size: 12px; }
+  .social-proof-meta { font-size: 10px; gap: 6px; }
+  .proof-verified { font-size: 9px; padding: 1px 4px; }
 }
 
 /* ========== FLASH OFFER COUNTDOWN ========== */
@@ -683,13 +702,32 @@ ul, ol { list-style: none; }
 @keyframes proofProgress { 0% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
 
 @media (max-width: 768px) {
-  .flash-offer-inner { flex-direction: column; text-align: center; gap: 16px; padding: 20px; }
-  .flash-left { text-align: center; }
+  .flash-offer-inner { flex-direction: column; text-align: center; gap: 14px; padding: 16px; }
+  .flash-left { text-align: center; min-width: auto; }
   .flash-urgency { justify-content: center; }
-  .social-proof { left: 12px; right: 12px; bottom: 12px; }
+  .flash-timer { justify-content: center; }
+  .flash-cta { width: 100%; justify-content: center; box-sizing: border-box; }
+  .social-proof { left: 10px; right: 10px; bottom: 10px; }
   .social-proof-inner { max-width: 100%; }
 }
 @media (max-width: 480px) {
-  .timer-number { width: 42px; height: 42px; font-size: 18px; }
-  .flash-cta { padding: 12px 20px; font-size: 13px; width: 100%; justify-content: center; }
+  .flash-offer { margin-bottom: 20px; border-radius: 14px; }
+  .flash-offer-inner { padding: 14px 12px; gap: 10px; }
+  .flash-headline { font-size: 15px; }
+  .flash-badge { padding: 3px 8px; }
+  .flash-badge-text { font-size: 9px; letter-spacing: 1px; }
+  .flash-timer-label { font-size: 9px; margin-bottom: 6px; }
+  .timer-number { width: 38px; height: 38px; font-size: 16px; border-radius: 10px; }
+  .timer-dot { font-size: 16px; padding-bottom: 12px; }
+  .timer-unit { font-size: 8px; margin-top: 2px; }
+  .flash-cta { padding: 11px 16px; font-size: 12px; border-radius: 10px; }
+  .flash-urgency { font-size: 11px; }
+  .social-proof { left: 6px; right: 6px; bottom: 6px; }
+  .social-proof-inner { padding: 10px 12px; border-radius: 12px; gap: 8px; }
+  .social-proof-icon { width: 34px; height: 34px; min-width: 34px; font-size: 17px; border-radius: 9px; }
+  .social-proof-text { font-size: 11px; line-height: 1.35; }
+  .social-proof-meta { font-size: 9px; gap: 5px; margin-top: 3px; }
+  .proof-verified { font-size: 8px; padding: 1px 4px; }
+  .social-proof-close { top: 6px; right: 6px; width: 18px; height: 18px; font-size: 10px; }
+  .social-proof-progress { height: 2px; }
 }
