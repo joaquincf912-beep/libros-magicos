@@ -1,0 +1,30 @@
+{
+  "name": "Libros Mágicos - Libros Personalizados para Niños",
+  "short_name": "Libros Mágicos",
+  "description": "Crea libros personalizados únicos donde tu hijo es el protagonista. Envío mundial. Powered by TraccionWeb.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdf2f8",
+  "theme_color": "#ec4899",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "books",
+    "education",
+    "kids"
+  ],
+  "lang": "es"
+}
