@@ -826,29 +826,42 @@
 
             <!-- OFERTA RELÁMPAGO -->
             <div class="flash-offer fade-in" id="flash-offer">
+                <div class="flash-offer-glow"></div>
                 <div class="flash-offer-inner">
-                    <div class="flash-icon">⚡</div>
-                    <div class="flash-text">
-                        <span class="flash-label">¡OFERTA RELÁMPAGO!</span>
-                        <span class="flash-desc">30% de descuento en todos los planes</span>
+                    <div class="flash-left">
+                        <div class="flash-badge">
+                            <span class="flash-fire">🔥</span>
+                            <span class="flash-badge-text">OFERTA RELÁMPAGO</span>
+                        </div>
+                        <p class="flash-headline">30% OFF en <strong>todos los planes</strong></p>
+                        <p class="flash-urgency">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <span id="flash-buyers">23 personas</span> comprando ahora
+                        </p>
                     </div>
-                    <div class="flash-timer" id="flash-timer">
-                        <div class="timer-block">
-                            <span class="timer-number" id="timer-hours">02</span>
-                            <span class="timer-label">Horas</span>
-                        </div>
-                        <span class="timer-sep">:</span>
-                        <div class="timer-block">
-                            <span class="timer-number" id="timer-minutes">45</span>
-                            <span class="timer-label">Min</span>
-                        </div>
-                        <span class="timer-sep">:</span>
-                        <div class="timer-block">
-                            <span class="timer-number" id="timer-seconds">00</span>
-                            <span class="timer-label">Seg</span>
+                    <div class="flash-center">
+                        <p class="flash-timer-label">La oferta termina en:</p>
+                        <div class="flash-timer" id="flash-timer">
+                            <div class="timer-block">
+                                <span class="timer-number" id="timer-hours">02</span>
+                                <span class="timer-unit">hrs</span>
+                            </div>
+                            <span class="timer-dot">:</span>
+                            <div class="timer-block">
+                                <span class="timer-number" id="timer-minutes">45</span>
+                                <span class="timer-unit">min</span>
+                            </div>
+                            <span class="timer-dot">:</span>
+                            <div class="timer-block">
+                                <span class="timer-number" id="timer-seconds">00</span>
+                                <span class="timer-unit">seg</span>
+                            </div>
                         </div>
                     </div>
-                    <a href="https://wa.me/573026456024?text=Hola,%20quiero%20aprovechar%20la%20oferta%20relámpago%20del%2030%%20de%20descuento" target="_blank" rel="noopener noreferrer" class="flash-btn">¡Aprovecha Ya!</a>
+                    <a href="https://wa.me/573026456024?text=Hola,%20quiero%20aprovechar%20la%20oferta%20relámpago%20del%2030%%20de%20descuento" target="_blank" rel="noopener noreferrer" class="flash-cta">
+                        ¡Quiero mi descuento!
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                    </a>
                 </div>
             </div>
 
@@ -1145,14 +1158,16 @@
     <!-- NOTIFICACIÓN SOCIAL PROOF -->
     <div class="social-proof" id="social-proof">
         <div class="social-proof-inner">
-            <div class="social-proof-avatar" id="proof-avatar">C</div>
+            <div class="social-proof-icon" id="proof-icon">📚</div>
             <div class="social-proof-content">
-                <p class="social-proof-text" id="proof-text"><strong>Carlos</strong> acaba de reservar un libro para su hijo <strong>Emiliano</strong></p>
-                <p class="social-proof-time" id="proof-time">Hace 2 minutos · 🇨🇴 Colombia</p>
+                <p class="social-proof-text" id="proof-text"></p>
+                <p class="social-proof-meta">
+                    <span class="proof-time" id="proof-time"></span>
+                    <span class="proof-verified">✓ Verificado</span>
+                </p>
             </div>
-            <button class="social-proof-close" id="proof-close" aria-label="Cerrar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
-            </button>
+            <button class="social-proof-close" id="proof-close" aria-label="Cerrar">✕</button>
+            <div class="social-proof-progress"></div>
         </div>
     </div>
 </body>

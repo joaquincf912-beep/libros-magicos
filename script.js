@@ -340,111 +340,102 @@ document.addEventListener('DOMContentLoaded', () => {
             if (stored && parseInt(stored) > Date.now()) {
                 this.endTime = parseInt(stored);
             } else {
-                // Set 2 hours 45 minutes from now
-                this.endTime = Date.now() + (2 * 60 * 60 * 1000) + (45 * 60 * 1000);
+                this.endTime = Date.now() + (2 * 60 * 60 + 45 * 60) * 1000;
                 localStorage.setItem('flash_offer_end', this.endTime.toString());
             }
             this.tick();
             setInterval(() => this.tick(), 1000);
+            this.updateBuyers();
+            setInterval(() => this.updateBuyers(), 8000);
         },
         
         tick() {
-            const now = Date.now();
-            const diff = Math.max(0, this.endTime - now);
+            const diff = Math.max(0, this.endTime - Date.now());
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
             
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            const h = document.getElementById('timer-hours');
-            const m = document.getElementById('timer-minutes');
-            const s = document.getElementById('timer-seconds');
-            
-            if (h) h.textContent = String(hours).padStart(2, '0');
-            if (m) m.textContent = String(minutes).padStart(2, '0');
-            if (s) s.textContent = String(seconds).padStart(2, '0');
+            const hEl = document.getElementById('timer-hours');
+            const mEl = document.getElementById('timer-minutes');
+            const sEl = document.getElementById('timer-seconds');
+            if (hEl) hEl.textContent = String(h).padStart(2, '0');
+            if (mEl) mEl.textContent = String(m).padStart(2, '0');
+            if (sEl) sEl.textContent = String(s).padStart(2, '0');
             
             if (diff <= 0) {
-                document.getElementById('flash-offer')?.classList.add('expired');
-                // Reset after expired for 5 minutes
-                setTimeout(() => {
-                    this.endTime = Date.now() + (2 * 60 * 60 * 1000) + (45 * 60 * 1000);
-                    localStorage.setItem('flash_offer_end', this.endTime.toString());
-                    document.getElementById('flash-offer')?.classList.remove('expired');
-                }, 5 * 60 * 1000);
+                this.endTime = Date.now() + (2 * 60 * 60 + 45 * 60) * 1000;
+                localStorage.setItem('flash_offer_end', this.endTime.toString());
+            }
+        },
+        
+        updateBuyers() {
+            const el = document.getElementById('flash-buyers');
+            if (el) {
+                const n = 15 + Math.floor(Math.random() * 20);
+                el.textContent = n + ' personas';
             }
         }
     };
-    
     FlashOffer.init();
 
     // ========== SOCIAL PROOF NOTIFICATIONS ==========
     const SocialProof = {
-        currentIndex: 0,
-        isVisible: false,
-        isPaused: false,
+        index: 0,
+        timeout: null,
         
-        notifications: [
-            { name: 'Carlos', child: 'Emiliano', book: 'Mi Super Aventura', time: '2 minutos', country: '🇨🇴 Colombia', color: '#ec4899' },
-            { name: 'María', child: 'Sofía', book: 'Mi Princesa Favorita', time: '5 minutos', country: '🇲🇽 México', color: '#a855f7' },
-            { name: 'Andrea', child: 'Matías', book: 'Aventura en el Espacio', time: '8 minutos', country: '🇪🇸 España', color: '#3b82f6' },
-            { name: 'Laura', child: 'Valentina', book: 'El Bosque Encantado', time: '12 minutos', country: '🇦🇷 Argentina', color: '#22c55e' },
-            { name: 'Pedro', child: 'Santiago', book: 'Mi Primer Libro de Colores', time: '15 minutos', country: '🇻🇪 Venezuela', color: '#f97316' },
-            { name: 'Camila', child: 'Isabella', book: 'La Receta Mágica', time: '18 minutos', country: '🇨🇱 Chile', color: '#06b6d4' },
-            { name: 'Diego', child: 'Luciana', book: 'Mi Super Aventura', time: '22 minutos', country: '🇵🇪 Perú', color: '#eab308' },
-            { name: 'Fernanda', child: 'Martín', book: 'Mi Princesa Favorita', time: '25 minutos', country: '🇺🇾 Uruguay', color: '#ef4444' },
-            { name: 'Roberto', child: 'Camila', book: 'Aventura en el Espacio', time: '30 minutos', country: '🇪🇨 Ecuador', color: '#8b5cf6' },
-            { name: 'Ana', child: 'Sebastián', book: 'El Bosque Encantado', time: '35 minutos', country: '🇩🇴 Rep. Dominicana', color: '#ec4899' },
-            { name: 'Julián', child: 'Emma', book: 'La Receta Mágica', time: '40 minutos', country: '🇵🇦 Panamá', color: '#10b981' },
-            { name: 'Daniela', child: 'Tomás', book: 'Mi Primer Libro de Colores', time: '45 minutos', country: '🇨🇷 Costa Rica', color: '#6366f1' },
+        data: [
+            { icon: '📚', name: 'Carlos', child: 'Emiliano', book: 'Mi Super Aventura', time: 'Hace 2 min', flag: '🇨🇴 Colombia' },
+            { icon: '👸', name: 'María', child: 'Sofía', book: 'Mi Princesa Favorita', time: 'Hace 5 min', flag: '🇲🇽 México' },
+            { icon: '🚀', name: 'Andrea', child: 'Matías', book: 'Aventura en el Espacio', time: 'Hace 8 min', flag: '🇪🇸 España' },
+            { icon: '🌳', name: 'Laura', child: 'Valentina', book: 'El Bosque Encantado', time: 'Hace 11 min', flag: '🇦🇷 Argentina' },
+            { icon: '🎨', name: 'Pedro', child: 'Santiago', book: 'Mi Primer Libro de Colores', time: 'Hace 14 min', flag: '🇻🇪 Venezuela' },
+            { icon: '🍰', name: 'Camila', child: 'Isabella', book: 'La Receta Mágica', time: 'Hace 17 min', flag: '🇨🇱 Chile' },
+            { icon: '🦸', name: 'Diego', child: 'Luciana', book: 'Mi Super Aventura', time: 'Hace 20 min', flag: '🇵🇪 Perú' },
+            { icon: '👸', name: 'Fernanda', child: 'Martín', book: 'Mi Princesa Favorita', time: 'Hace 23 min', flag: '🇺🇾 Uruguay' },
+            { icon: '🚀', name: 'Roberto', child: 'Camila', book: 'Aventura en el Espacio', time: 'Hace 26 min', flag: '🇪🇨 Ecuador' },
+            { icon: '🌳', name: 'Ana', child: 'Sebastián', book: 'El Bosque Encantado', time: 'Hace 30 min', flag: '🇩🇴 Rep. Dominicana' },
+            { icon: '🍰', name: 'Julián', child: 'Emma', book: 'La Receta Mágica', time: 'Hace 33 min', flag: '🇵🇦 Panamá' },
+            { icon: '🎨', name: 'Daniela', child: 'Tomás', book: 'Mi Primer Libro de Colores', time: 'Hace 36 min', flag: '🇨🇷 Costa Rica' },
         ],
         
         init() {
-            const closeBtn = document.getElementById('proof-close');
-            closeBtn?.addEventListener('click', () => this.hide());
-            
-            // First notification after 8 seconds
-            setTimeout(() => this.show(), 8000);
+            document.getElementById('proof-close')?.addEventListener('click', () => this.hide());
+            setTimeout(() => this.show(), 6000);
         },
         
         show() {
-            if (this.isPaused) return;
-            
-            const notif = this.notifications[this.currentIndex];
+            const d = this.data[this.index];
             const el = document.getElementById('social-proof');
-            const avatar = document.getElementById('proof-avatar');
+            const icon = document.getElementById('proof-icon');
             const text = document.getElementById('proof-text');
             const time = document.getElementById('proof-time');
+            if (!el) return;
             
-            if (!el || !avatar || !text || !time) return;
+            if (icon) icon.textContent = d.icon;
+            if (text) text.innerHTML = `<strong>${d.name}</strong> descargó <strong>"${d.book}"</strong> para <strong>${d.child}</strong>`;
+            if (time) time.textContent = `${d.time} · ${d.flag}`;
             
-            avatar.textContent = notif.name.charAt(0);
-            avatar.style.background = `linear-gradient(135deg, ${notif.color}, ${notif.color}88)`;
-            text.innerHTML = `<strong>${notif.name}</strong> acaba de descargar <strong>"${notif.book}"</strong> para su hijo/a <strong>${notif.child}</strong>`;
-            time.textContent = `Hace ${notif.time} · ${notif.country}`;
+            // Reset progress bar
+            const bar = el.querySelector('.social-proof-progress');
+            if (bar) { bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = 'proofProgress 5s linear forwards'; }
             
             el.classList.add('visible');
-            this.isVisible = true;
             
-            // Hide after 6 seconds
-            setTimeout(() => {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
                 this.hide();
-                // Next notification in 15-30 seconds
-                const nextDelay = 15000 + Math.random() * 15000;
+                const next = 12000 + Math.random() * 18000;
                 setTimeout(() => {
-                    this.currentIndex = (this.currentIndex + 1) % this.notifications.length;
+                    this.index = (this.index + 1) % this.data.length;
                     this.show();
-                }, nextDelay);
-            }, 6000);
+                }, next);
+            }, 5000);
         },
         
         hide() {
-            const el = document.getElementById('social-proof');
-            el?.classList.remove('visible');
-            this.isVisible = false;
+            document.getElementById('social-proof')?.classList.remove('visible');
         }
     };
-    
     SocialProof.init();
 
     // ========== CONSOLE BRANDING ==========
