@@ -42,11 +42,11 @@
     <!-- ========== GOOGLE FONTS ========== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- ========== STYLESHEETS ========== -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="order.css">
+    <link rel="stylesheet" href="styles.css?v=20261026e">
+    <link rel="stylesheet" href="order.css?v=20261026e">
 
     <!-- ========== PAYPAL JS SDK ========== -->
     <script src="https://www.paypal.com/sdk/js?client-id=AWsaRUnJ7rxP4ZEkJXxRG-Xe5VWptfmuKbQu13P4kkbwyKV8zRIsZV7rHiYlbeArxgIrzNDtBILh9HL5&currency=USD"></script>
@@ -145,7 +145,6 @@
         <!-- HEADER HERO -->
         <header class="checkout-hero">
             <div class="container">
-                <span class="checkout-badge" data-i18n="checkout_badge">✨ Tu Aventura Mágica Comienza Aquí</span>
                 <h1 class="checkout-title" data-i18n="checkout_title">Personaliza y Ordena tu Libro Digital</h1>
                 <p class="checkout-subtitle" data-i18n="checkout_subtitle">Crea una historia inolvidable donde tu pequeño/a es el protagonista. Descarga digital instantánea en PDF.</p>
 
@@ -689,42 +688,6 @@
         </div>
     </main>
 
-    <!-- ========== SUCCESS MODAL ========== -->
-    <div class="modal-overlay" id="success-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-success-title">
-        <div class="success-modal">
-            <div class="modal-celebration-icon">🎉</div>
-            <h2 class="modal-title" id="modal-success-title" data-i18n="modal_title">¡Pago Confirmado con Éxito!</h2>
-            <p class="modal-text" data-i18n="modal_text">¡Muchas gracias! Hemos recibido tu pago correctamente y nuestro taller mágico ha comenzado a escribir e ilustrar el libro.</p>
-
-            <div class="modal-receipt-box">
-                <div class="receipt-item">
-                    <span data-i18n="modal_item_order">N° de Orden PayPal:</span>
-                    <span id="modal-receipt-id">ORD-123456</span>
-                </div>
-                <div class="receipt-item">
-                    <span data-i18n="modal_item_plan">Plan:</span>
-                    <span id="modal-receipt-plan">Plan Familiar</span>
-                </div>
-                <div class="receipt-item">
-                    <span data-i18n="modal_item_child">Protagonista:</span>
-                    <span id="modal-receipt-child">Mateo</span>
-                </div>
-                <div class="receipt-item">
-                    <span data-i18n="modal_item_email">Enviado a:</span>
-                    <span id="modal-receipt-email">correo@ejemplo.com</span>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <a href="https://wa.me/573026456024" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-chat" id="modal-wa-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 0 0 .611.611l4.458-1.495A11.96 11.96 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.336 0-4.512-.728-6.299-1.969l-.44-.312-2.647.888.888-2.647-.312-.44A9.965 9.965 0 0 1 2 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
-                    <span data-i18n="modal_btn_wa">Escríbenos por WhatsApp</span>
-                </a>
-                <a href="index.html" class="btn btn-glass" id="modal-close-btn" data-i18n="modal_btn_home">Volver a Libros Mágicos</a>
-            </div>
-        </div>
-    </div>
-
     <!-- ========== FOOTER (SAME AS INDEX.HTML) ========== -->
     <footer class="footer" id="footer">
         <div class="container">
@@ -782,6 +745,7 @@
     </footer>
 
     <!-- ========== JAVASCRIPT LOGIC ========== -->
-    <script src="order.js"></script>
+    <script src="order-i18n.js?v=20261026e"></script>
+    <script src="order.js?v=20261026e"></script>
 </body>
 </html>

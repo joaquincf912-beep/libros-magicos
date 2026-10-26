@@ -788,6 +788,27 @@
   };
 
   /* ==========================================================================
+     TRADUCCIONES DEL CHECKOUT — ver order-i18n.js
+     El HTML usa claves con guion bajo (checkout_title, nav_home...) y el
+     diccionario de arriba usa claves con puntos (page.title, plan.basico.name).
+     Sin este puente el selector de idioma no traducía ningún texto visible.
+     ========================================================================== */
+  const ORDER_I18N = window.ORDER_I18N || { alias: {}, extra: {} };
+  const KEY_ALIAS = ORDER_I18N.alias || {};
+
+  Object.keys(ORDER_I18N.extra || {}).forEach((lang) => {
+    if (TRANSLATIONS[lang]) Object.assign(TRANSLATIONS[lang], ORDER_I18N.extra[lang]);
+  });
+
+  /** Traduce una clave del HTML: exacta o mediante su alias con puntos. */
+  function trDict(dict, key) {
+    if (Object.prototype.hasOwnProperty.call(dict, key)) return dict[key];
+    const alias = KEY_ALIAS[key];
+    if (alias && Object.prototype.hasOwnProperty.call(dict, alias)) return dict[alias];
+    return undefined;
+  }
+
+  /* ==========================================================================
      3. APPLICATION STATE
      ========================================================================== */
 
@@ -1068,24 +1089,25 @@
     // 1. Text elements with [data-i18n]
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');
-      if (dict[key]) {
+      const valor = trDict(dict, key);
+      if (valor) {
         // If element contains pure text
         if (el.children.length === 0) {
-          el.textContent = dict[key];
+          el.textContent = valor;
         } else {
           // If element has nested icons/badges, find text node
           const textNode = Array.from(el.childNodes).find(
             (n) => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim()
           );
           if (textNode) {
-            textNode.nodeValue = ' ' + dict[key] + ' ';
+            textNode.nodeValue = ' ' + valor + ' ';
           } else {
             // Check for direct label span
             const spanLabel = el.querySelector('.i18n-text, span:not([class*="icon"]):not([class*="badge"])');
             if (spanLabel) {
-              spanLabel.textContent = dict[key];
+              spanLabel.textContent = valor;
             } else {
-              el.innerHTML = dict[key];
+              el.innerHTML = valor;
             }
           }
         }

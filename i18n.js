@@ -110,10 +110,14 @@
             // que out = lead + trail duplicaba el nodo en cada pase. Cada pase
             // multiplicaba el texto por 2 (DOM de 16 MB y +850.000 líneas en
             // segundos) y la página se congelaba o se caía.
+            // Espacios inicial y final SIN solaparse (ver nota de arriba)…
             var lead = (cur.match(/^\s*/) || [''])[0];
             var trail = cur.slice(lead.length).match(/\s*$/)[0];
-            var middle = cur.slice(lead.length, cur.length - trail.length);
-            var outTrimmed = current === 'es' ? middle : translateBase(middle, current);
+            // …pero se traduce siempre desde el texto ORIGINAL en español
+            // (__i18nBase), no desde el texto que se ve ahora. Si no, al cambiar
+            // por segunda vez (EN→PT) o al volver a español no se traducía nada.
+            var origen = base.trim();
+            var outTrimmed = current === 'es' ? origen : translateBase(origen, current);
             var out = lead + outTrimmed + trail;
             if (out !== cur) node.nodeValue = out;
             node.__i18nLast = out;
