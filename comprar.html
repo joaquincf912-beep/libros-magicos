@@ -18,6 +18,27 @@
     <meta property="og:locale" content="es_ES">
     <meta property="og:image" content="https://librosparaninos.traccionweb.com/images/cover-superhero.jpg">
 
+    <!-- ========== RENDIMIENTO: JS desde el inicio + solo el idioma activo ========== -->
+    <script>
+        document.documentElement.className += ' js';
+        (function () {
+            var l = null;
+            try { l = localStorage.getItem('lm_lang'); } catch (e) { /* modo privado */ }
+            if (l && l !== 'es' && ['en', 'pt', 'fr', 'zh'].indexOf(l) > -1) {
+                var s = document.createElement('script');
+                s.src = 'i18n-' + l + '.js';
+                s.defer = true;
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+
+    <!-- ========== GOOGLE FONTS (antes venía de un @import dentro de styles.css,
+         que encadenaba otra petición y retrasaba el primer pintado) ========== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -253,10 +274,6 @@
     </footer>
 
     <!-- ========== JAVASCRIPT ========== -->
-    <script src="i18n-en.js" defer></script>
-    <script src="i18n-pt.js" defer></script>
-    <script src="i18n-fr.js" defer></script>
-    <script src="i18n-zh.js" defer></script>
     <script src="i18n.js" defer></script>
     <script src="script.js" defer></script>
 

@@ -70,10 +70,28 @@
     <meta name="msapplication-TileColor" content="#ec4899">
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
 
-    <!-- ========== GOOGLE FONTS ========== -->
+    <!-- ========== RENDIMIENTO: JS desde el inicio + solo el idioma activo ========== -->
+    <script>
+        // Marca <html> como .js para que .fade-in solo se oculte si el JS funciona:
+        // si algún script falla, el contenido sigue visible (nada de pantalla en blanco).
+        document.documentElement.className += ' js';
+        // Carga únicamente el diccionario del idioma guardado (es = ninguno).
+        (function () {
+            var l = null;
+            try { l = localStorage.getItem('lm_lang'); } catch (e) { /* modo privado */ }
+            if (l && l !== 'es' && ['en', 'pt', 'fr', 'zh'].indexOf(l) > -1) {
+                var s = document.createElement('script');
+                s.src = 'i18n-' + l + '.js';
+                s.defer = true;
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+
+    <!-- ========== GOOGLE FONTS (una sola petición) ========== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- ========== STYLESHEET ========== -->
     <link rel="stylesheet" href="styles.css">
@@ -537,7 +555,10 @@
             <div class="books-grid">
                 <article class="book-card fade-in" id="book-superheroe">
                     <div class="book-cover">
-                        <img src="images/cover-superhero.jpg" alt="Libro personalizado Mi Super Aventura - Libro de superhéroe para niños" loading="lazy" width="400" height="533">
+                        <picture>
+                        <source type="image/webp" srcset="images/cover-superhero.webp">
+                        <img src="images/cover-superhero.jpg" alt="Libro personalizado Mi Super Aventura - Libro de superhéroe para niños" loading="lazy" width="400" height="533" decoding="async">
+                    </picture>
                         <div class="book-overlay"></div>
                         <div class="book-icon-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
@@ -560,7 +581,10 @@
 
                 <article class="book-card fade-in" id="book-princesa">
                     <div class="book-cover">
-                        <img src="images/cover-princess.jpg" alt="Libro personalizado Mi Princesa Favorita - Cuento de princesas para niñas" loading="lazy" width="400" height="533">
+                        <picture>
+                        <source type="image/webp" srcset="images/cover-princess.webp">
+                        <img src="images/cover-princess.jpg" alt="Libro personalizado Mi Princesa Favorita - Cuento de princesas para niñas" loading="lazy" width="400" height="533" decoding="async">
+                    </picture>
                         <div class="book-overlay"></div>
                         <div class="book-icon-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
@@ -583,7 +607,10 @@
 
                 <article class="book-card fade-in" id="book-espacio">
                     <div class="book-cover">
-                        <img src="images/cover-space.jpg" alt="Libro personalizado Aventura en el Espacio - Cuento de astronautas para niños" loading="lazy" width="400" height="533">
+                        <picture>
+                        <source type="image/webp" srcset="images/cover-space.webp">
+                        <img src="images/cover-space.jpg" alt="Libro personalizado Aventura en el Espacio - Cuento de astronautas para niños" loading="lazy" width="400" height="533" decoding="async">
+                    </picture>
                         <div class="book-overlay"></div>
                         <div class="book-icon-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
@@ -606,7 +633,10 @@
 
                 <article class="book-card fade-in" id="book-bosque">
                     <div class="book-cover">
-                        <img src="images/cover-forest.jpg" alt="Libro personalizado El Bosque Encantado - Cuento de naturaleza para niños" loading="lazy" width="400" height="533">
+                        <picture>
+                        <source type="image/webp" srcset="images/cover-forest.webp">
+                        <img src="images/cover-forest.jpg" alt="Libro personalizado El Bosque Encantado - Cuento de naturaleza para niños" loading="lazy" width="400" height="533" decoding="async">
+                    </picture>
                         <div class="book-overlay"></div>
                         <div class="book-icon-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
@@ -629,7 +659,10 @@
 
                 <article class="book-card fade-in" id="book-colores">
                     <div class="book-cover">
-                        <img src="images/cover-colors.jpg" alt="Mi Primer Libro de Colores - Libro educativo personalizado para bebés" loading="lazy" width="400" height="533">
+                        <picture>
+                        <source type="image/webp" srcset="images/cover-colors.webp">
+                        <img src="images/cover-colors.jpg" alt="Mi Primer Libro de Colores - Libro educativo personalizado para bebés" loading="lazy" width="400" height="533" decoding="async">
+                    </picture>
                         <div class="book-overlay"></div>
                         <div class="book-icon-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
@@ -652,7 +685,10 @@
 
                 <article class="book-card fade-in" id="book-receta">
                     <div class="book-cover">
-                        <img src="images/cover-recipe.jpg" alt="Libro personalizado La Receta Mágica - Cuento de cocina para niños" loading="lazy" width="400" height="533">
+                        <picture>
+                        <source type="image/webp" srcset="images/cover-recipe.webp">
+                        <img src="images/cover-recipe.jpg" alt="Libro personalizado La Receta Mágica - Cuento de cocina para niños" loading="lazy" width="400" height="533" decoding="async">
+                    </picture>
                         <div class="book-overlay"></div>
                         <div class="book-icon-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
@@ -689,14 +725,20 @@
                 <div class="flipbook" id="flipbook">
                     <div class="flipbook-page active" data-page="0">
                         <div class="page-content page-cover-front">
-                            <img src="images/cover-superhero.jpg" alt="Portada - Mi Super Aventura" loading="lazy">
+                            <picture>
+                        <source type="image/webp" srcset="images/cover-superhero.webp">
+                        <img src="images/cover-superhero.jpg" alt="Portada - Mi Super Aventura" loading="lazy" decoding="async">
+                    </picture>
                             <div class="page-number">Portada</div>
                         </div>
                     </div>
                     <div class="flipbook-page" data-page="1">
                         <div class="page-content page-interior">
                             <div class="page-illustration">
-                                <img src="images/flipbook-page1.jpg" alt="Página 1 - El niño despierta con superpoderes" loading="lazy">
+                                <picture>
+                        <source type="image/webp" srcset="images/flipbook-page1.webp">
+                        <img src="images/flipbook-page1.jpg" alt="Página 1 - El niño despierta con superpoderes" loading="lazy" decoding="async">
+                    </picture>
                             </div>
                             <div class="page-number">Páginas 1-2</div>
                         </div>
@@ -1164,10 +1206,8 @@
     </footer>
 
     <!-- ========== JAVASCRIPT ========== -->
-    <script src="i18n-en.js" defer></script>
-    <script src="i18n-pt.js" defer></script>
-    <script src="i18n-fr.js" defer></script>
-    <script src="i18n-zh.js" defer></script>
+    <!-- Los diccionarios i18n-*.js ya no se cargan todos: solo pide el idioma
+         activo (ver snippet en <head> y ensureDict() en i18n.js). -->
     <script src="i18n.js" defer></script>
     <script src="script.js" defer></script>
 

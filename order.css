@@ -5,7 +5,8 @@
    Uses design tokens & CSS variables from styles.css
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap');
+/* Fuentes: ya cargadas por el <link> del <head> de order.html (el @import aquí
+   pedía la misma hoja de Google Fonts por segunda vez y bloqueaba el render). */
 
 :root {
   --font-display: 'Outfit', 'Fredoka', sans-serif;

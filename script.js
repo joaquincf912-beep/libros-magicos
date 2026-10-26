@@ -5,6 +5,12 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // localStorage puede lanzar en modo privado / con cookies bloqueadas.
+    // Sin esta guardia, una excepción aquí aborta TODO lo inicializado después
+    // (animaciones, menú, contadores) y la página parecería "caída".
+    const storageGet = (key) => { try { return localStorage.getItem(key); } catch (e) { return null; } };
+    const storageSet = (key, value) => { try { localStorage.setItem(key, value); } catch (e) { /* modo privado */ } };
+
     // ========== LANGUAGE SWITCHER ==========
     const langBtn = document.getElementById('lang-btn');
     const langSwitcher = document.getElementById('lang-switcher');
@@ -15,12 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', () => {
                 const lang = btn.dataset.lang;
                 const flags = { es: '🇪🇸 ES', en: '🇺🇸 EN', pt: '🇧🇷 PT', fr: '🇫🇷 FR' };
-                document.getElementById('lang-current').textContent = flags[lang] || flags.es;
+                // Aplica la traducción real y carga SU diccionario si falta
+                // (antes solo se cambiaba la bandera y el texto seguía en español).
+                if (window.LM_setLang) window.LM_setLang(lang);
                 langSwitcher.classList.remove('open');
-                localStorage.setItem('lang', lang);
+                document.getElementById('lang-current').textContent = flags[lang] || flags.es;
+                storageSet('lang', lang);
             });
         });
-        const saved = localStorage.getItem('lang');
+        const saved = storageGet('lang') || storageGet('lm_lang');
         if (saved) {
             const flags = { es: '🇪🇸 ES', en: '🇺🇸 EN', pt: '🇧🇷 PT', fr: '🇫🇷 FR' };
             document.getElementById('lang-current').textContent = flags[saved] || flags.es;
@@ -211,20 +220,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ========== NAVBAR SCROLL EFFECT ==========
+    // ========== NAVBAR + PARALLAX (un solo listener, un frame por scroll) ==========
+    // Antes eran dos listeners que en CADA evento de scroll hacían
+    // querySelectorAll() + 5 escrituras de transform sobre capas con blur(60px),
+    // repintando el desenfoque en cada frame: eso es el lag al hacer scroll.
     const navbar = document.getElementById('navbar');
-    let lastScroll = 0;
-    
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 50) {
-            navbar?.classList.add('scrolled');
-        } else {
-            navbar?.classList.remove('scrolled');
+    const orbs = Array.from(document.querySelectorAll('.hero-orb'));
+    const orbSpeeds = orbs.map((_, i) => 0.05 + (i * 0.02));
+    let scrollFrame = 0;
+
+    const applyScrollEffects = () => {
+        scrollFrame = 0;
+        const y = window.pageYOffset;
+        navbar?.classList.toggle('scrolled', y > 50);
+        for (let i = 0; i < orbs.length; i++) {
+            orbs[i].style.transform = `translate3d(0, ${y * orbSpeeds[i]}px, 0)`;
         }
-        
-        lastScroll = currentScroll;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (scrollFrame) return;
+        scrollFrame = requestAnimationFrame(applyScrollEffects);
     }, { passive: true });
 
     // ========== MOBILE MENU ==========
@@ -317,52 +333,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ========== BOOK CARDS HOVER TILT EFFECT ==========
+    // Con throttle por requestAnimationFrame: sin él, cada movimiento del ratón
+    // recalcula perspective/rotateX/rotateY y repinta la tarjeta (micro-lag).
     document.querySelectorAll('.book-card').forEach((card) => {
-        card.addEventListener('mousemove', (e) => {
+        let tiltFrame = 0;
+        let pendingX = 0;
+        let pendingY = 0;
+
+        const applyTilt = () => {
+            tiltFrame = 0;
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
+            const rotateX = (pendingY - centerY) / 20;
+            const rotateY = (centerX - pendingX) / 20;
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+        };
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            pendingX = e.clientX - rect.left;
+            pendingY = e.clientY - rect.top;
+            if (!tiltFrame) tiltFrame = requestAnimationFrame(applyTilt);
         });
-        
+
         card.addEventListener('mouseleave', () => {
+            if (tiltFrame) { cancelAnimationFrame(tiltFrame); tiltFrame = 0; }
             card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
         });
     });
 
-    // ========== PARALLAX EFFECTS ==========
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        
-        document.querySelectorAll('.hero-orb').forEach((orb, i) => {
-            const speed = 0.05 + (i * 0.02);
-            orb.style.transform = `translateY(${scrolled * speed}px)`;
-        });
-    }, { passive: true });
-
-    // ========== SERVICE WORKER REGISTRATION ==========
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').catch(() => {});
-        });
-    }
+    // ========== SERVICE WORKER ==========
+    // Eliminado: no existe /sw.js en el repo, así que cada visita hacía una
+    // petición 404 + un registro fallido de service worker.
 
     // ========== FLASH OFFER COUNTDOWN ==========
     const FlashOffer = {
         endTime: null,
         
         init() {
-            const stored = localStorage.getItem('flash_offer_end');
+            const stored = storageGet('flash_offer_end');
             if (stored && parseInt(stored) > Date.now()) {
                 this.endTime = parseInt(stored);
             } else {
                 this.endTime = Date.now() + (2 * 60 * 60 + 45 * 60) * 1000;
-                localStorage.setItem('flash_offer_end', this.endTime.toString());
+                storageSet('flash_offer_end', this.endTime.toString());
             }
             this.tick();
             setInterval(() => this.tick(), 1000);
@@ -385,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (diff <= 0) {
                 this.endTime = Date.now() + (2 * 60 * 60 + 45 * 60) * 1000;
-                localStorage.setItem('flash_offer_end', this.endTime.toString());
+                storageSet('flash_offer_end', this.endTime.toString());
             }
         },
         

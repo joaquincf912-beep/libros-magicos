@@ -29,6 +29,36 @@
         return all[lang] || null;
     }
 
+    /*
+     * Carga perezosa de diccionarios: los 4 archivos (en/pt/fr/zh) ya no se
+     * descargan todos en cada visita. Solo se pide el del idioma activo, y solo
+     * cuando hace falta (idioma guardado o cambio desde el selector).
+     */
+    var loading = {};
+    function ensureDict(lang, onReady) {
+        if (lang === 'es' || dictFor(lang)) {
+            if (onReady) onReady();
+            return;
+        }
+        if (loading[lang]) {
+            if (onReady) loading[lang].push(onReady);
+            return;
+        }
+        loading[lang] = onReady ? [onReady] : [];
+        var s = document.createElement('script');
+        s.src = 'i18n-' + lang + '.js';
+        s.async = true;
+        s.onload = function () {
+            var queue = loading[lang] || [];
+            delete loading[lang];
+            runPass();
+            updateSwitcherUI();
+            queue.forEach(function (fn) { fn(); });
+        };
+        s.onerror = function () { delete loading[lang]; };
+        document.head.appendChild(s);
+    }
+
     function interpolate(str, vars) {
         if (!vars) return str;
         return str.replace(/\{(\w+)\}/g, function (m, k) {
@@ -74,10 +104,16 @@
             }
             var base = node.__i18nBase;
             if (base === undefined) continue;
+            // Espacios inicial y final SIN solaparse. Antes se usaba /^\s*/ y
+            // /\s*$/ por separado: en un nodo que solo tenía espacios (la
+            // mayoría del HTML) los dos coincidían con TODOS los espacios, así
+            // que out = lead + trail duplicaba el nodo en cada pase. Cada pase
+            // multiplicaba el texto por 2 (DOM de 16 MB y +850.000 líneas en
+            // segundos) y la página se congelaba o se caía.
             var lead = (cur.match(/^\s*/) || [''])[0];
-            var trail = (cur.match(/\s*$/) || [''])[0];
-            var trimmed = cur.trim();
-            var outTrimmed = current === 'es' ? base.trim() : translateBase(base.trim(), current);
+            var trail = cur.slice(lead.length).match(/\s*$/)[0];
+            var middle = cur.slice(lead.length, cur.length - trail.length);
+            var outTrimmed = current === 'es' ? middle : translateBase(middle, current);
             var out = lead + outTrimmed + trail;
             if (out !== cur) node.nodeValue = out;
             node.__i18nLast = out;
@@ -118,27 +154,34 @@
         passTitle();
     }
 
-    function schedulePass() {
-        clearTimeout(passTimer);
-        passTimer = setTimeout(runPass, 40);
-    }
+    /*
+     * IMPORTANTE — esto antes era un MutationObserver sobre TODO el <body> con
+     * subtree: true. Mientras el resto de la página escribía en el DOM (contador
+     * animado, cuenta atrás de la oferta, notificaciones sociales) el observer
+     * se disparaba sin parar y el hilo principal se congelaba: la página se
+     * quedaba bloqueada y "se caía". Se reprodujo midiendo: la landing tardaba
+     * más de 45 s en responder; sin el observer cargaba en ~6 s.
+     *
+     * Alternativa acotada y segura: repasar los textos una vez por segundo, solo
+     * cuando el idioma activo necesita traducción y solo si la pestaña está
+     * visible. El texto dinámico (cifras, contador, notificaciones) se traduce
+     * con menos de 1 s de retraso y el coste es fijo.
+     */
+    var passInterval = null;
 
     function startObserver() {
-        if (!window.MutationObserver || observer) return;
-        observer = new MutationObserver(function (mutations) {
-            for (var i = 0; i < mutations.length; i++) {
-                var m = mutations[i];
-                if (m.type === 'characterData' || m.type === 'childList') {
-                    schedulePass();
-                    return;
-                }
-            }
-        });
-        observer.observe(document.body, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
+        if (passInterval || current === 'es' || !document.body) return;
+        passInterval = setInterval(function () {
+            if (!document.hidden) runPass();
+        }, 1000);
+    }
+
+    function stopObserver() {
+        if (passInterval) {
+            clearInterval(passInterval);
+            passInterval = null;
+        }
+        clearTimeout(passTimer);
     }
 
     /* ================= SWITCHER UI ================= */
@@ -222,7 +265,11 @@
         current = lang;
         try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* modo privado */ }
         document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+        ensureDict(lang);   // si el diccionario aún no está, llega y vuelve a traducir
         runPass();
+        // El observer solo vive si el idioma activo necesita traducción.
+        if (lang === 'es') stopObserver();
+        else startObserver();
         updateSwitcherUI();
         try {
             document.dispatchEvent(new CustomEvent('lm:langchange', { detail: { lang: lang } }));
@@ -241,7 +288,7 @@
         var saved = null;
         try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
         buildSwitcher();
+        // applyLang() ya arranca (o no) el observer según el idioma.
         applyLang(saved || 'es');
-        startObserver();
     });
 })();
