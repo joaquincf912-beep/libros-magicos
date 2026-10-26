@@ -130,7 +130,9 @@
       trust_4: 'Confirmación por Email',
       trust_5: 'No almacenamos datos de pago',
       guarantee_note: '🌟 Garantía de satisfacción total: si deseas algún ajuste en la dedicatoria o en la historia, lo hacemos sin costo.',
-      bundle_tip_familiar: '💡 Genial: tu plan Familiar incluye 3 ebooks. Te contactaremos después de tu compra para definir tus 2 libros adicionales.'
+      story_custom_badge: 'Tu propia idea',
+      bundle_tip_familiar: '💡 Genial: tu plan Familiar incluye 3 ebooks. Te contactaremos después de tu compra para definir tus 2 libros adicionales.',
+      bundle_tip_premium: '💡 Perfecto: tu plan Premium incluye 5 ebooks. Te contactaremos después de tu compra para definir tus 4 libros adicionales.'
     },
     en: {
       nav_home: 'Home',
@@ -155,7 +157,9 @@
       trust_4: 'Email confirmation',
       trust_5: 'We never store payment data',
       guarantee_note: '🌟 Total satisfaction guarantee: if you want any change to the dedication or the story, we make it at no cost.',
-      bundle_tip_familiar: '💡 Great: your Family plan includes 3 ebooks. We will contact you after your purchase to define your 2 extra books.'
+      story_custom_badge: 'Your own idea',
+      bundle_tip_familiar: '💡 Great: your Family plan includes 3 ebooks. We will contact you after your purchase to define your 2 extra books.',
+      bundle_tip_premium: '💡 Perfect: your Premium plan includes 5 ebooks. We will contact you after your purchase to define your 4 extra books.'
     },
     pt: {
       nav_home: 'Início',
@@ -180,7 +184,9 @@
       trust_4: 'Confirmação por e-mail',
       trust_5: 'Não armazenamos dados de pagamento',
       guarantee_note: '🌟 Garantia de satisfação total: se quiser algum ajuste na dedicatória ou na história, fazemos sem custo.',
-      bundle_tip_familiar: '💡 Ótimo: seu plano Família inclui 3 ebooks. Entraremos em contato após a compra para definir seus 2 livros adicionais.'
+      story_custom_badge: 'Sua própria ideia',
+      bundle_tip_familiar: '💡 Ótimo: seu plano Família inclui 3 ebooks. Entraremos em contato após a compra para definir seus 2 livros adicionais.',
+      bundle_tip_premium: '💡 Perfeito: seu plano Premium inclui 5 ebooks. Entraremos em contato após a compra para definir seus 4 livros adicionais.'
     },
     fr: {
       nav_home: 'Accueil',
@@ -205,7 +211,9 @@
       trust_4: 'Confirmation par e-mail',
       trust_5: 'Aucune donnée de paiement stockée',
       guarantee_note: "🌟 Garantie de satisfaction totale : si vous souhaitez une modification de la dédicace ou de l'histoire, nous la réalisons gratuitement.",
-      bundle_tip_familiar: "💡 Parfait : votre formule Famille comprend 3 ebooks. Nous vous contacterons après l'achat pour définir vos 2 livres supplémentaires."
+      story_custom_badge: 'Votre propre idée',
+      bundle_tip_familiar: "💡 Parfait : votre formule Famille comprend 3 ebooks. Nous vous contacterons après l'achat pour définir vos 2 livres supplémentaires.",
+      bundle_tip_premium: "💡 Parfait : votre formule Premium comprend 5 ebooks. Nous vous contacterons après l'achat pour définir vos 4 livres supplémentaires."
     }
   };
 

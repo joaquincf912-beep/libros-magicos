@@ -1336,10 +1336,12 @@
     // Check if story cards exist in DOM. If empty container exists, auto-populate
     populateStoryCardsIfEmpty();
 
-    // Set initial story
+    // Set initial story (?story=clave o ?libro=Título del libro, como llega
+    // desde las tarjetas de la portada).
     let initialStory = 'superheroe';
-    if (paramStory && STORIES[paramStory]) {
-      initialStory = paramStory;
+    const fromParam = resolveStoryParam(paramStory);
+    if (fromParam) {
+      initialStory = fromParam;
     }
     selectStory(initialStory, false);
 
@@ -1351,10 +1353,19 @@
         e.preventDefault();
         if (storyId) selectStory(storyId, true);
       });
+
+      // Teclado: estas tarjetas son role="radio", así que Enter y Espacio deben
+      // elegirlas igual que un clic (en móvil también sirve para lectores de pantalla).
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          if (storyId) selectStory(storyId, true);
+        }
+      });
     });
 
     // Setup custom story textarea listener
-    const customTextarea = getEl('custom-story') || getEl('book-description');
+    const customTextarea = getCustomStoryEl();
     if (customTextarea) {
       customTextarea.addEventListener('input', () => {
         state.customStoryText = sanitizeInput(customTextarea.value);
@@ -1362,6 +1373,51 @@
         updateOrderSummary();
       });
     }
+
+    // El textarea debe empezar oculto hasta que se elija la historia personalizada
+    toggleCustomStoryContainer(state.isCustomStory);
+  }
+
+  /**
+   * Textarea de la historia personalizada. En el HTML se llama
+   * #custom-story-desc (antes se buscaba "custom-story" / "book-description",
+   * que no existían, así que el texto nunca se validaba ni salía en el resumen).
+   */
+  function getCustomStoryEl() {
+    return document.getElementById('custom-story-desc') ||
+           getEl('custom-story') ||
+           getEl('book-description');
+  }
+
+  /**
+   * Acepta tanto la clave de la historia ("espacio") como su título
+   * ("Aventura en el Espacio") y devuelve la clave que existe en STORIES.
+   */
+  function resolveStoryParam(raw) {
+    if (!raw) return null;
+
+    const normalize = (s) => String(s)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+
+    const wanted = normalize(raw);
+    if (!wanted) return null;
+
+    // Clave directa (incluye el alias antiguo "personalizada")
+    if (STORIES[raw]) return raw;
+    if (raw === 'personalizada' || raw === 'custom') return 'custom';
+
+    // Título en español o en el idioma actual
+    const match = Object.keys(STORIES).find((key) => {
+      const story = STORIES[key];
+      const titles = [story.title.es, t(`story.${key}.title`, story.title.es), key];
+      return titles.some((title) => normalize(title) === wanted);
+    });
+
+    return match || null;
   }
 
   /**
@@ -1397,6 +1453,10 @@
    * Selects a story, toggles custom story field, and updates summary
    */
   function selectStory(storyId, animated = true) {
+    // La tarjeta del HTML se llamaba "personalizada" pero el estado/diccionario
+    // usa "custom": al pulsarla no coincidía con nada y volvía a la primera
+    // historia, así que era imposible pedir una historia personalizada.
+    if (storyId === 'personalizada') storyId = 'custom';
     if (!STORIES[storyId]) storyId = 'superheroe';
 
     state.selectedStoryKey = storyId;
@@ -1418,6 +1478,12 @@
     // Show/Hide custom story textarea container
     toggleCustomStoryContainer(state.isCustomStory);
 
+    // La tarjeta también es un radio: aria-checked es lo que leen los lectores
+    document.querySelectorAll('.story-card').forEach((card) => {
+      const id = card.getAttribute('data-story');
+      card.setAttribute('aria-checked', String(id === storyId));
+    });
+
     updateOrderSummary();
   }
 
@@ -1425,25 +1491,31 @@
    * Shows or hides the custom story textarea container
    */
   function toggleCustomStoryContainer(show) {
-    const container = document.getElementById('custom-story-container') ||
+    const container = document.getElementById('custom-story-box') ||
+                      document.getElementById('custom-story-container') ||
                       document.getElementById('custom-story-group') ||
+                      document.querySelector('.custom-story-box') ||
                       document.querySelector('.custom-story-group') ||
                       (getEl('custom-story') ? getEl('custom-story').closest('.form-group') : null);
 
-    if (container) {
-      if (show) {
-        container.classList.remove('hidden');
-        container.style.display = 'block';
-        const textarea = container.querySelector('textarea');
-        if (textarea) {
-          setTimeout(() => textarea.focus(), 150);
-        }
-      } else {
-        container.classList.add('hidden');
-        container.style.display = 'none';
-        const textarea = container.querySelector('textarea');
-        if (textarea) clearFieldError(textarea);
+    if (!container) return;
+
+    // `hidden` es más barato que escribir display a mano y evita que el
+    // textarea se vea antes de elegir historia.
+    container.hidden = !show;
+    container.classList.toggle('hidden', !show);
+
+    const textarea = container.querySelector('textarea');
+    if (!textarea) return;
+
+    if (show) {
+      // Solo se enfoca en escritorio: en móvil abriría el teclado y taparía
+      // la historia recién elegida.
+      if (window.matchMedia('(min-width: 769px)').matches) {
+        setTimeout(() => textarea.focus({ preventScroll: true }), 120);
       }
+    } else {
+      clearFieldError(textarea);
     }
   }
 
@@ -1466,9 +1538,12 @@
       { id: 'dedication', prop: 'dedication' },
       { id: 'country', prop: 'country' },
       { id: 'child-gender', prop: 'gender' },
-      { id: 'child-hair', prop: 'hair' },
-      { id: 'child-skin', prop: 'skin' },
-      { id: 'child-eyes', prop: 'eyes' }
+      // Los id reales del HTML son hair-color / skin-tone / eye-color: con los
+      // nombres child-hair / child-skin / child-eyes el estado nunca guardaba
+      // el color y el pedido llegaba sin esos datos.
+      { id: 'hair-color', prop: 'hair' },
+      { id: 'skin-tone', prop: 'skin' },
+      { id: 'eye-color', prop: 'eyes' }
     ];
 
     inputsToWatch.forEach(({ id, prop }) => {
@@ -1482,6 +1557,66 @@
         });
       }
     });
+  }
+
+  /* ==========================================================================
+     9-bis. MUESTRAS DE TONO DE PIEL
+     ========================================================================== */
+
+  /**
+   * Las muestras redondas del tono de piel eran <div> sin ningún listener: al
+   * pulsarlas no pasaba nada ("se queda pegada") y el color nunca llegaba al
+   * pedido. Aquí se conectan con el <select> en los dos sentidos.
+   */
+  function initSkinToneSwatches() {
+    const wrap = document.getElementById('skin-tone-swatches');
+    const select = document.getElementById('skin-tone');
+    if (!wrap) return;
+
+    const label = document.getElementById('skin-tone-current-label');
+    const swatches = Array.prototype.slice.call(wrap.querySelectorAll('.skin-swatch'));
+
+    function sync(value) {
+      if (!value) value = 'claro';
+      let activeLabel = '';
+
+      swatches.forEach((sw) => {
+        const on = sw.dataset.value === value;
+        // classList.toggle + aria en la misma pasada: sin re-render, sin lag
+        sw.classList.toggle('selected', on);
+        sw.setAttribute('aria-pressed', String(on));
+        sw.setAttribute('tabindex', on ? '0' : '-1');
+        if (on) activeLabel = sw.dataset.label || sw.getAttribute('aria-label') || '';
+      });
+
+      if (label && activeLabel) label.textContent = activeLabel;
+      if (select && select.value !== value) select.value = value;
+      if (select) clearFieldError(select);
+      state.skin = value;
+    }
+
+    swatches.forEach((sw) => {
+      sw.addEventListener('click', (e) => {
+        e.preventDefault();
+        sync(sw.dataset.value);
+      });
+
+      // Navegación con teclado entre muestras (izquierda/derecha)
+      sw.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const index = swatches.indexOf(sw);
+        const next = swatches[(index + (e.key === 'ArrowRight' ? 1 : swatches.length - 1)) % swatches.length];
+        sync(next.dataset.value);
+        next.focus({ preventScroll: true });
+      });
+    });
+
+    if (select) {
+      select.addEventListener('change', () => sync(select.value));
+    }
+
+    sync(select ? select.value : 'claro');
   }
 
   /**
@@ -1500,17 +1635,31 @@
       summaryPlanEl.textContent = localizedPlanName;
     }
 
+    // El badge del resumen también debe cambiar con el plan (antes se quedaba
+    // siempre en "Familiar (3 Ebooks)")
+    const summaryBadgeEl = getEl('summary-plan-badge');
+    if (summaryBadgeEl) {
+      summaryBadgeEl.textContent = `${localizedPlanName} (${plan.books} Ebooks)`;
+    }
+
     // 2. Plan Price
+    // Los importes visibles del resumen usan ids distintos a los que buscaba
+    // esta función (summary-subtotal-val / summary-total-val), así que el total
+    // se quedaba en $24.99 aunque se eligiera Premium: ahora sí se actualiza.
     const formattedPrice = `$${plan.price.toFixed(2)}`;
     const summaryPriceEl = getEl('summary-price') ||
+                           getEl('summary-subtotal-val') ||
                            document.querySelector('.summary-price, .plan-summary .plan-price, #order-summary-price');
     if (summaryPriceEl) {
       summaryPriceEl.textContent = formattedPrice;
     }
 
-    const summaryTotalEl = getEl('summary-total') || document.querySelector('.summary-total, #order-summary-total');
+    const summaryTotalEl = getEl('summary-total') ||
+                           getEl('summary-total-val') ||
+                           document.querySelector('.summary-total, #order-summary-total');
     if (summaryTotalEl) {
-      summaryTotalEl.textContent = formattedPrice;
+      // El total lleva el sufijo de moneda en el diseño actual
+      summaryTotalEl.textContent = `${formattedPrice} USD`;
     }
 
     // 3. Child Name
@@ -1525,7 +1674,7 @@
     // 4. Selected Story
     let storyName = '';
     if (state.isCustomStory) {
-      const customInput = getEl('custom-story') || getEl('book-description');
+      const customInput = getCustomStoryEl();
       const text = customInput ? sanitizeInput(customInput.value) : state.customStoryText;
       if (text) {
         storyName = text.length > 28 ? `${text.substring(0, 25)}...` : text;
@@ -1538,10 +1687,17 @@
     }
 
     const summaryStoryEl = getEl('summary-story') ||
+                           getEl('summary-story-name') ||
                            document.querySelector('.summary-story, #order-summary-story');
     if (summaryStoryEl) {
       summaryStoryEl.textContent = storyName;
     }
+
+    // Miniatura del resumen: debe mostrar la portada de la historia elegida
+    updateSummaryCover();
+
+    // Aviso de ebooks incluidos según el plan
+    updateBundleTip();
 
     // 5. Books Count
     const summaryBooksEl = getEl('summary-books') ||
@@ -1567,6 +1723,68 @@
         <li><span style="color:#22c55e;">✓</span> ${escapeHtml(f2)}</li>
         <li><span style="color:#22c55e;">✓</span> ${escapeHtml(f3)}</li>
       `;
+    }
+  }
+
+  /* Portadas de la colección, para la miniatura del resumen */
+  const STORY_COVERS = {
+    superheroe: 'cover-superhero',
+    princesa: 'cover-princess',
+    espacio: 'cover-space',
+    bosque: 'cover-forest',
+    colores: 'cover-colors',
+    receta: 'cover-recipe'
+  };
+
+  /**
+   * El aviso de "tu plan incluye N ebooks" era fijo: con Premium seguía
+   * diciendo 3 ebooks (y con Básico, 1 libro, no aplica).
+   */
+  function updateBundleTip() {
+    const box = document.getElementById('bundle-tip-box');
+    const text = document.getElementById('bundle-tip-text');
+    if (!box || !text) return;
+
+    const books = (state.selectedPlan && state.selectedPlan.books) || 1;
+    if (books <= 1) {
+      box.hidden = true;
+      return;
+    }
+
+    box.hidden = false;
+    const dict = TRANSLATIONS[state.currentLang] || TRANSLATIONS.es;
+    const key = books >= 5 ? 'bundle_tip_premium' : 'bundle_tip_familiar';
+    text.textContent = dict[key] || TRANSLATIONS.es[key] || '';
+  }
+
+  /**
+   * Cambia la portada del resumen según la historia elegida (antes siempre se
+   * veía la del superhéroe, aunque el cliente eligiera princesa o espacio).
+   */
+  function updateSummaryCover() {
+    const wrap = document.getElementById('summary-preview-img-wrap');
+    if (!wrap) return;
+
+    const img = wrap.querySelector('img');
+    const cover = STORY_COVERS[state.selectedStoryKey];
+
+    if (!cover) {
+      // Historia personalizada: todavía no hay portada que mostrar
+      if (img) img.style.visibility = 'hidden';
+      wrap.classList.add('preview-thumb--custom');
+      return;
+    }
+
+    wrap.classList.remove('preview-thumb--custom');
+    if (img) {
+      img.style.visibility = '';
+      if (!img.src.endsWith(`${cover}.jpg`) && !img.src.endsWith(`${cover}.webp`)) {
+        const source = wrap.querySelector('picture source');
+        if (source) source.srcset = `images/${cover}.webp`;
+        img.src = `images/${cover}.jpg`;
+        const story = STORIES[state.selectedStoryKey];
+        if (story) img.alt = story.title.es;
+      }
     }
   }
 
@@ -1674,7 +1892,7 @@
 
     // 6. Custom Story (if custom story is selected, min 10 chars)
     if (state.isCustomStory) {
-      const customStoryEl = getEl('custom-story') || getEl('book-description');
+      const customStoryEl = getCustomStoryEl();
       if (customStoryEl) {
         const storyVal = sanitizeInput(customStoryEl.value);
         check(storyVal.length >= 10, customStoryEl, 'error.custom_story');
@@ -1704,6 +1922,59 @@
   /**
    * Initializes PayPal Smart Payment Buttons or polls for SDK
    */
+  /**
+   * PayPal Smart Buttons: SDK cargado bajo demanda.
+   *
+   * El SDK venía en el <head> de order.html y era render-blocking: el navegador
+   * no pintaba NADA hasta descargarlo de paypal.com (cientos de KB, sobre todo
+   * lento en datos móviles). Ahora se pide cuando la zona de pago está a punto
+   * de entrar en pantalla.
+   */
+  var PAYPAL_SDK_URL = 'https://www.paypal.com/sdk/js?client-id=AWsaRUnJ7rxP4ZEkJXxRG-Xe5VWptfmuKbQu13P4kkbwyKV8zRIsZV7rHiYlbeArxgIrzNDtBILh9HL5&currency=USD';
+  var paypalSdkPromise = null;
+
+  function loadPayPalSdk() {
+    if (window.paypal && typeof window.paypal.Buttons === 'function') {
+      return Promise.resolve();
+    }
+    if (paypalSdkPromise) return paypalSdkPromise;
+
+    paypalSdkPromise = new Promise(function (resolve, reject) {
+      var script = document.createElement('script');
+      script.src = PAYPAL_SDK_URL;
+      script.async = true;
+      var settled = false;
+
+      script.onload = function () {
+        settled = true;
+        if (window.paypal && typeof window.paypal.Buttons === 'function') resolve();
+        else reject(new Error('PayPal SDK sin botones'));
+      };
+      script.onerror = function () {
+        settled = true;
+        reject(new Error('No se pudo cargar el SDK de PayPal'));
+      };
+
+      document.head.appendChild(script);
+
+      // Red móvil lenta: no dejamos al cliente esperando un botón que nunca llega.
+      setTimeout(function () {
+        if (!settled) reject(new Error('Tiempo de espera de PayPal agotado'));
+      }, 15000);
+    });
+
+    return paypalSdkPromise;
+  }
+
+  function showPayPalPlaceholder(container) {
+    if (!container || container.querySelector('[data-paypal-placeholder]')) return;
+    container.innerHTML = '' +
+      '<div class="paypal-skeleton" data-paypal-placeholder>' +
+        '<span class="lm-spinner" aria-hidden="true"></span>' +
+        '<span>' + escapeHtml(t('btn.pay', 'Pagar con PayPal')) + '</span>' +
+      '</div>';
+  }
+
   function initPayPal() {
     let container = document.getElementById('paypal-button-container');
 
@@ -1720,21 +1991,27 @@
 
     if (!container) return;
 
-    if (window.paypal && typeof window.paypal.Buttons === 'function') {
-      renderPayPalButtons(container);
-    } else {
-      // Poll if SDK script is still loading asynchronously
-      let attempts = 0;
-      const interval = setInterval(() => {
-        attempts++;
-        if (window.paypal && typeof window.paypal.Buttons === 'function') {
-          clearInterval(interval);
-          renderPayPalButtons(container);
-        } else if (attempts > 25) {
-          clearInterval(interval);
+    var start = function () {
+      showPayPalPlaceholder(container);
+      loadPayPalSdk()
+        .then(function () { renderPayPalButtons(container); })
+        .catch(function (err) {
+          console.warn('PayPal no disponible:', err && err.message);
           setupFallbackPaymentButton(container);
+        });
+    };
+
+    // Cargar solo cuando el bloque de pago se acerque a la pantalla.
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        if (entries.some(function (entry) { return entry.isIntersecting; })) {
+          observer.disconnect();
+          start();
         }
-      }, 200);
+      }, { rootMargin: '400px 0px' });
+      observer.observe(container);
+    } else {
+      start();
     }
   }
 
@@ -1945,6 +2222,11 @@
     if (formSection) formSection.style.display = 'none';
     if (planSelector) planSelector.style.display = 'none';
 
+    // En esta página el formulario vive en .checkout-layout: se oculta entero
+    // para que el cliente vea solo la confirmación y no el formulario otra vez.
+    const checkoutLayout = document.querySelector('.checkout-layout');
+    if (checkoutLayout) checkoutLayout.style.display = 'none';
+
     // WhatsApp confirmation URL
     const waText = encodeURIComponent(
       `¡Hola Libros Mágicos! Acabo de pagar mi pedido con ID: ${orderId}.\n\n` +
@@ -2082,9 +2364,19 @@
       </div>
     `;
 
-    // Insert after header or form
-    const targetParent = (formSection && formSection.parentElement) || document.querySelector('.order-section .container') || document.body;
-    targetParent.insertAdjacentHTML('beforeend', successHtml);
+    // Se inserta dentro del contenedor del checkout (antes se buscaba
+    // ".order-section .container", que no existe en esta página, y terminaba
+    // colgado del <body> sin márgenes: la tarjeta se salía de la pantalla y el
+    // texto aparecía cortado en el móvil).
+    const targetParent = document.querySelector('.checkout-container') ||
+                         document.querySelector('main') ||
+                         (formSection && formSection.parentElement) ||
+                         document.body;
+
+    const successWrap = document.createElement('div');
+    successWrap.className = 'order-success-wrap';
+    successWrap.innerHTML = successHtml;
+    targetParent.appendChild(successWrap);
 
     // Scroll smoothly to success screen
     const successEl = document.querySelector('.order-success-screen');
@@ -2135,6 +2427,7 @@
     initPlanSelection();
     initStorySelection();
     initFormListeners();
+    initSkinToneSwatches();
     initPayPal();
     updateOrderSummary();
   }
@@ -2156,7 +2449,8 @@
     selectStory,
     setLanguage,
     validateForm,
-    sanitizeInput
+    sanitizeInput,
+    showSuccess
   };
 
 })();

@@ -568,6 +568,18 @@ ul, ol { list-style: none; }
 
 /* Accesibilidad + batería: sin animaciones infinitas ni desplazamiento suave
    para quien lo pida en el sistema. */
+/* ========== FONDO ANIMADO EN MÓVIL ==========
+   Las nubes son capas con filter: blur(8px) que se mueven en bucle y los
+   destellos cambian opacidad; en un teléfono eso repinta capas desenfocadas en
+   cada frame y es lo que se siente como "lag" al hacer scroll o al tocar un
+   color. En pantallas pequeñas se quedan quietas y sin desenfoque: el fondo se
+   ve igual de bonito pero sin coste por frame. */
+@media (max-width: 768px) {
+  .cloud { animation: none; filter: none; opacity: 0.3; }
+  .sparkle { animation: none; opacity: 0.55; will-change: auto; }
+  .sun-glow { animation: none; will-change: auto; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

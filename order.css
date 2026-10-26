@@ -2318,3 +2318,298 @@
     font-size: 21px;
   }
 }
+
+/* ==========================================================================
+   12-bis. MÓVIL: PAGO, TONOS DE PIEL E HISTORIA PERSONALIZADA
+   ========================================================================== */
+
+/* --- Muestras de tono de piel (ahora son <button>) --- */
+.skin-tone-container {
+  margin-top: 14px;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(253, 242, 248, 0.7);
+  border: 1px solid rgba(236, 72, 153, 0.14);
+}
+
+.skin-tone-caption {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.skin-swatch {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(15, 23, 42, 0.12);
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  /* Sin transiciones sobre filtros ni sombras grandes: solo escala, que va por
+     GPU. Antes cada muestra animaba box-shadow y el toque tardaba en responder. */
+  transition: transform 0.12s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+}
+
+.skin-swatch:hover {
+  transform: scale(1.06);
+}
+
+.skin-swatch:active {
+  transform: scale(0.94);
+}
+
+.skin-swatch.selected {
+  border-color: var(--pink-500);
+  box-shadow: inset 0 0 0 3px #fff;
+  transform: scale(1.06);
+}
+
+.skin-swatch:focus-visible {
+  outline: 3px solid var(--purple-400);
+  outline-offset: 3px;
+}
+
+.skin-tone-label {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--pink-600);
+}
+
+/* --- Historia personalizada: tarjeta distinta al resto --- */
+.story-card--custom {
+  border-style: dashed;
+  border-color: var(--pink-300);
+  background: linear-gradient(135deg, #fff7fb, #f7f5ff);
+}
+
+.story-card--custom.selected {
+  border-style: solid;
+  border-color: var(--pink-500);
+}
+
+.story-custom-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--pink-600);
+  background: #ffe4f0;
+  border-radius: 999px;
+  padding: 3px 9px;
+  margin-bottom: 4px;
+}
+
+.custom-story-box {
+  margin-top: 14px;
+}
+
+.custom-story-box[hidden] {
+  display: none !important;
+}
+
+/* --- PayPal: esqueleto mientras carga el SDK --- */
+.paypal-skeleton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  border-radius: 999px;
+  border: 2px dashed rgba(236, 72, 153, 0.35);
+  background: #fff7fb;
+  color: var(--pink-600);
+  font-size: 14px;
+  font-weight: 800;
+  font-family: var(--font-display);
+}
+
+#paypal-button-container {
+  width: 100%;
+  min-height: 55px;
+}
+
+#paypal-button-container > div,
+#paypal-button-container iframe {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Móvil: el pago tiene que verse grande, centrado y sin huecos raros
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .paypal-wrapper {
+    padding: 16px 14px;
+    margin-top: 14px;
+    border-radius: 18px;
+  }
+
+  .paypal-btn-title {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    font-size: 14px;
+  }
+
+  #paypal-button-container {
+    min-height: 60px;
+  }
+
+  /* Las tarjetas de historia en una sola columna se leen mejor en el teléfono */
+  .stories-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  /* En el teléfono la tarjeta va en horizontal (portada | texto | check).
+     Los estilos que inyecta order.js la ponían en columna, y quedaba una
+     tarjeta altísima con la portada diminuta y el check flotando abajo. */
+  .stories-grid .story-card,
+  .stories-grid .book-option {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 14px !important;
+  }
+
+  .stories-grid .story-img-wrap {
+    width: 46px !important;
+    height: 60px !important;
+    min-width: 46px !important;
+  }
+
+  .stories-grid .story-info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .stories-grid .story-title {
+    font-size: 15px !important;
+    line-height: 1.25;
+  }
+
+  .stories-grid .story-desc {
+    font-size: 12px !important;
+    line-height: 1.35;
+  }
+
+  /* El check se ancla arriba a la derecha para no empujar el texto */
+  .stories-grid .story-radio-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    font-size: 11px;
+  }
+
+  .stories-grid .story-card .story-info {
+    padding-right: 26px;
+  }
+
+  /* Tonos de piel: sin el rótulo "TONO:" (el campo ya se llama Tono de Piel)
+     las 5 muestras entran en una fila y el nombre queda debajo. */
+  .skin-tone-caption {
+    display: none;
+  }
+
+  .skin-tone-container {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .skin-swatch {
+    width: 40px;
+    height: 40px;
+  }
+
+  .skin-tone-label {
+    flex-basis: 100%;
+    margin-left: 0;
+    margin-top: 2px;
+  }
+
+  /* El resumen queda debajo del formulario: se refuerza el total antes del pago */
+  .summary-total-row {
+    margin-bottom: 6px;
+  }
+
+  /* 40px: entran las 5 muestras en una sola fila en pantallas de 360-390px */
+  .skin-swatch {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Miniatura del resumen cuando la historia es personalizada (sin portada) */
+.preview-thumb--custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fde68a, #f9a8d4, #c4b5fd);
+}
+
+.preview-thumb--custom::after {
+  content: '✨';
+  font-size: 24px;
+}
+
+/* El aviso de ebooks se oculta con [hidden] en el plan Básico (1 libro) */
+.bundle-tip-box[hidden] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Pantalla de pago confirmado: en el móvil la tarjeta se salía de la pantalla
+   y el texto aparecía cortado a los lados.
+   -------------------------------------------------------------------------- */
+.order-success-wrap {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 4px;
+}
+
+.order-success-screen {
+  width: 100%;
+  max-width: 680px;
+  box-sizing: border-box;
+  padding: clamp(18px, 5vw, 40px) !important;
+  overflow-wrap: anywhere;
+}
+
+.order-success-screen h2 {
+  font-size: clamp(20px, 5.6vw, 26px) !important;
+}
+
+.order-success-screen > div {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .order-success-screen {
+    border-radius: 20px !important;
+    margin: 12px auto 28px !important;
+  }
+
+  .order-success-screen > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Números de los pasos: sin que el "1." se parta en dos líneas */
+.order-success-screen li > span:first-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}

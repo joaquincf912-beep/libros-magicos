@@ -45,11 +45,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- ========== STYLESHEETS ========== -->
-    <link rel="stylesheet" href="styles.css?v=20261026f">
-    <link rel="stylesheet" href="order.css?v=20261026f">
+    <link rel="stylesheet" href="styles.css?v=20261026j">
+    <link rel="stylesheet" href="order.css?v=20261026j">
 
-    <!-- ========== PAYPAL JS SDK ========== -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AWsaRUnJ7rxP4ZEkJXxRG-Xe5VWptfmuKbQu13P4kkbwyKV8zRIsZV7rHiYlbeArxgIrzNDtBILh9HL5&currency=USD"></script>
+    <!-- ========== PAYPAL JS SDK ==========
+         Antes se cargaba aquí, en el <head>, y BLOQUEABA el primer pintado: son
+         cientos de KB desde paypal.com antes de mostrar nada (en móvil con 4G
+         eso son 2-4 s de pantalla en blanco). Ahora order.js lo carga aparte,
+         solo cuando la zona de pago se acerca a la pantalla.
+    -->
 </head>
 <body>
     <!-- ========== ANIMATED BACKGROUND ========== -->
@@ -340,13 +344,13 @@
                         </div>
 
                         <!-- Interactive Visual Swatches for Skin Tone -->
-                        <div class="skin-tone-container" aria-label="Muestras visuales de tono de piel">
-                            <span style="font-size: 12px; font-weight: 700; color: var(--gray-600); margin-right: 4px;">Tono:</span>
-                            <div class="skin-swatch" style="background: #fce4d6;" data-value="muy_claro" data-label="Muy Claro" title="Muy Claro"></div>
-                            <div class="skin-swatch selected" style="background: #f7cca9;" data-value="claro" data-label="Claro" title="Claro"></div>
-                            <div class="skin-swatch" style="background: #e0ac69;" data-value="medio" data-label="Medio / Dorado" title="Medio"></div>
-                            <div class="skin-swatch" style="background: #c68642;" data-value="moreno" data-label="Moreno" title="Moreno"></div>
-                            <div class="skin-swatch" style="background: #8d5524;" data-value="oscuro" data-label="Oscuro" title="Oscuro"></div>
+                        <div class="skin-tone-container" id="skin-tone-swatches" role="group" aria-label="Muestras visuales de tono de piel">
+                            <span class="skin-tone-caption">Tono:</span>
+                            <button type="button" class="skin-swatch" style="background: #fce4d6;" data-value="muy_claro" data-label="Muy Claro" aria-label="Muy Claro" aria-pressed="false"></button>
+                            <button type="button" class="skin-swatch selected" style="background: #f7cca9;" data-value="claro" data-label="Claro" aria-label="Claro" aria-pressed="true"></button>
+                            <button type="button" class="skin-swatch" style="background: #e0ac69;" data-value="medio" data-label="Medio / Dorado" aria-label="Medio / Dorado" aria-pressed="false"></button>
+                            <button type="button" class="skin-swatch" style="background: #c68642;" data-value="moreno" data-label="Moreno" aria-label="Moreno" aria-pressed="false"></button>
+                            <button type="button" class="skin-swatch" style="background: #8d5524;" data-value="oscuro" data-label="Oscuro" aria-label="Oscuro" aria-pressed="false"></button>
                             <span class="skin-tone-label" id="skin-tone-current-label">Claro</span>
                         </div>
                     </section>
@@ -455,11 +459,12 @@
                             </article>
 
                             <!-- 7. Historia Personalizada -->
-                            <article class="story-card" data-story="personalizada" role="radio" aria-checked="false" tabindex="0" style="grid-column: 1 / -1;">
+                            <article class="story-card story-card--custom" data-story="custom" role="radio" aria-checked="false" tabindex="0" style="grid-column: 1 / -1;">
                                 <div class="story-img-wrap">
                                     <div class="story-custom-icon">✨</div>
                                 </div>
                                 <div class="story-info">
+                                    <span class="story-custom-badge" data-i18n="story_custom_badge">Tu propia idea</span>
                                     <h4 class="story-title" data-i18n="story_custom_title">Historia Personalizada</h4>
                                     <p class="story-desc" data-i18n="story_custom_desc">¿Tienes una idea única? Diseñamos la historia que tú imagines.</p>
                                 </div>
@@ -468,7 +473,7 @@
                         </div>
 
                         <!-- Conditional Textarea for Historia Personalizada -->
-                        <div class="custom-story-box" id="custom-story-box">
+                        <div class="custom-story-box" id="custom-story-box" hidden>
                             <label for="custom-story-desc" class="field-label">
                                 <span data-i18n="label_custom_story_desc">Describe tu historia personalizada *</span>
                             </label>
@@ -745,7 +750,7 @@
     </footer>
 
     <!-- ========== JAVASCRIPT LOGIC ========== -->
-    <script src="order-i18n.js?v=20261026f"></script>
-    <script src="order.js?v=20261026f"></script>
+    <script src="order-i18n.js?v=20261026j"></script>
+    <script src="order.js?v=20261026j"></script>
 </body>
 </html>
