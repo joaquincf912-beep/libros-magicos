@@ -101,13 +101,36 @@
   };
 
   var extra = {
-    /* En español se usan los textos exactos del HTML: sin esto, al volver a ES
-       el titular cambiaba por la versión corta del diccionario. */
+    /* Español: textos exactos del HTML. Sin esto, al volver a ES los textos que
+       no existen en el diccionario de order.js se quedaban en el otro idioma. */
     es: {
       'page.title': 'Personaliza y Ordena tu Libro Digital',
       'page.subtitle': 'Crea una historia inolvidable donde tu pequeño/a es el protagonista. Descarga digital instantánea en PDF.',
       'section.plan.title': '1. Selecciona tu Plan',
-      'section.plan.subtitle': 'Elige la opción perfecta para tu familia. Puedes cambiarlo en cualquier momento.'
+      'section.plan.subtitle': 'Elige la opción perfecta para tu familia. Puedes cambiarlo en cualquier momento.',
+      nav_home: 'Inicio',
+      nav_services: 'Servicios',
+      nav_books: 'Libros',
+      nav_preview: 'Vista Previa',
+      nav_pricing: 'Precios',
+      nav_faq: 'FAQ',
+      nav_contact: 'Contactar',
+      step_1_title: 'Elige tu Plan',
+      step_2_title: 'Personalización',
+      step_3_title: 'Pago Seguro',
+      hair_other: 'Otro',
+      form_section_extras_title: '4. Extras y Dedicatoria',
+      form_section_extras_sub: 'Opcional: Añade un mensaje que quedará impreso en la primera página para siempre.',
+      label_special_instructions: 'Instrucciones especiales o comentarios (opcional)',
+      summary_discount: 'Descuento especial:',
+      summary_discount_val: '-$0.00 (Incluido)',
+      security_title: 'Compra 100% Protegida',
+      trust_2: 'Protección al Comprador PayPal',
+      trust_3: 'Cifrado SSL 256-bit',
+      trust_4: 'Confirmación por Email',
+      trust_5: 'No almacenamos datos de pago',
+      guarantee_note: '🌟 Garantía de satisfacción total: si deseas algún ajuste en la dedicatoria o en la historia, lo hacemos sin costo.',
+      bundle_tip_familiar: '💡 Genial: tu plan Familiar incluye 3 ebooks. Te contactaremos después de tu compra para definir tus 2 libros adicionales.'
     },
     en: {
       nav_home: 'Home',
