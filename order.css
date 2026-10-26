@@ -1888,12 +1888,27 @@
   font-weight: 600;
   color: var(--gray-600);
   cursor: pointer;
-  transition: all 0.18s ease;
+  /* Solo las propiedades visibles: "transition: all" redibujaba el botón
+     entero (sombra, posición, fondo) y el toque se sentía lento en el móvil. */
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .gender-btn:hover {
   border-color: var(--pink-300);
   color: var(--pink-600);
+}
+
+/* Respuesta táctil inmediata */
+.gender-btn:active {
+  border-color: var(--pink-400);
+  background: var(--pink-50);
+}
+
+.gender-btn:focus-visible {
+  outline: 3px solid var(--purple-400);
+  outline-offset: 2px;
 }
 
 .gender-btn.selected {

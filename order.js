@@ -222,16 +222,16 @@
       'form.child_name': 'Nombre del Niño/a',
       'form.age': 'Edad',
       'form.gender': 'Género',
-      'form.hair': 'Color de Cabello',
+      'form.hair': 'Color de Cabello (opcional)',
       'form.skin': 'Tono de Piel',
-      'form.eyes': 'Color de Ojos',
+      'form.eyes': 'Color de Ojos (opcional)',
       'form.story': 'Historia o Tema',
       'form.custom_story': 'Describe tu Historia Personalizada',
       'form.dedication': 'Dedicatoria Especial (opcional)',
       'form.parent_name': 'Tu Nombre (Padre/Madre/Tutor)',
       'form.email': 'Correo Electrónico (para recibir el libro)',
       'form.phone': 'Teléfono / WhatsApp',
-      'form.country': 'País de Residencia',
+      'form.country': 'País de Residencia (opcional)',
       'form.select_placeholder': 'Selecciona una opción...',
 
       // Option Values
@@ -375,16 +375,16 @@
       'form.child_name': 'Child\'s Name',
       'form.age': 'Age',
       'form.gender': 'Gender',
-      'form.hair': 'Hair Color',
+      'form.hair': 'Hair Color (optional)',
       'form.skin': 'Skin Tone',
-      'form.eyes': 'Eye Color',
+      'form.eyes': 'Eye Color (optional)',
       'form.story': 'Story or Theme',
       'form.custom_story': 'Describe your Custom Story',
       'form.dedication': 'Special Dedication (optional)',
       'form.parent_name': 'Parent / Guardian Name',
       'form.email': 'Email Address (to receive the book)',
       'form.phone': 'Phone / WhatsApp',
-      'form.country': 'Country of Residence',
+      'form.country': 'Country of Residence (optional)',
       'form.select_placeholder': 'Select an option...',
 
       // Option Values
@@ -528,16 +528,16 @@
       'form.child_name': 'Nome da Criança',
       'form.age': 'Idade',
       'form.gender': 'Gênero',
-      'form.hair': 'Cor do Cabelo',
+      'form.hair': 'Cor do Cabelo (opcional)',
       'form.skin': 'Tom de Pele',
-      'form.eyes': 'Cor dos Olhos',
+      'form.eyes': 'Cor dos Olhos (opcional)',
       'form.story': 'História ou Tema',
       'form.custom_story': 'Descreva sua História Personalizada',
       'form.dedication': 'Dedicatória Especial (opcional)',
       'form.parent_name': 'Nome do Pai, Mãe ou Responsável',
       'form.email': 'E-mail (para receber o livro)',
       'form.phone': 'Telefone / WhatsApp',
-      'form.country': 'País de Residência',
+      'form.country': 'País de Residência (opcional)',
       'form.select_placeholder': 'Selecione uma opção...',
 
       // Option Values
@@ -681,16 +681,16 @@
       'form.child_name': 'Nom de l\'Enfant',
       'form.age': 'Âge',
       'form.gender': 'Genre',
-      'form.hair': 'Couleur des Cheveux',
+      'form.hair': 'Couleur des Cheveux (facultatif)',
       'form.skin': 'Teint de Peau',
-      'form.eyes': 'Couleur des Yeux',
+      'form.eyes': 'Couleur des Yeux (facultatif)',
       'form.story': 'Histoire ou Thème',
       'form.custom_story': 'Décrivez votre Histoire Personnalisée',
       'form.dedication': 'Dédicace Spéciale (facultatif)',
       'form.parent_name': 'Nom du Parent ou Tuteur',
       'form.email': 'E-mail (pour recevoir le livre)',
       'form.phone': 'Téléphone / WhatsApp',
-      'form.country': 'Pays de Résidence',
+      'form.country': 'Pays de Résidence (facultatif)',
       'form.select_placeholder': 'Sélectionnez une option...',
 
       // Option Values
@@ -1536,7 +1536,8 @@
       { id: 'phone', prop: 'parentPhone' },
       { id: 'parent-name', prop: 'parentName' },
       { id: 'dedication', prop: 'dedication' },
-      { id: 'country', prop: 'country' },
+      // El país real se llama parent-country ("country" no existía en el HTML)
+      { id: 'parent-country', prop: 'country' },
       { id: 'child-gender', prop: 'gender' },
       // Los id reales del HTML son hair-color / skin-tone / eye-color: con los
       // nombres child-hair / child-skin / child-eyes el estado nunca guardaba
@@ -1560,8 +1561,65 @@
   }
 
   /* ==========================================================================
-     9-bis. MUESTRAS DE TONO DE PIEL
+     9-bis. GÉNERO Y MUESTRAS DE TONO DE PIEL
      ========================================================================== */
+
+  /**
+   * Botones de género (Niño / Niña / No especificar).
+   *
+   * NO tenían ningún listener en toda la página: al pulsarlos no pasaba nada
+   * (el toque se sentía "pegado") y el género nunca se guardaba en el pedido,
+   * aunque el HTML lo marcaba como campo obligatorio.
+   */
+  function initGenderSelector() {
+    const group = document.querySelector('.gender-options');
+    if (!group) return;
+
+    const hidden = document.getElementById('child-gender');
+    const buttons = Array.prototype.slice.call(group.querySelectorAll('.gender-btn'));
+    if (!buttons.length) return;
+
+    function select(value, persist) {
+      if (!value) return;
+
+      // Una sola pasada de clases: sin re-render ni animaciones de sombra,
+      // el toque responde en el mismo frame.
+      buttons.forEach((btn) => {
+        const active = btn.getAttribute('data-value') === value;
+        btn.classList.toggle('selected', active);
+        btn.setAttribute('aria-pressed', String(active));
+        btn.tabIndex = active ? 0 : -1;
+      });
+
+      if (hidden) hidden.value = value;
+      state.gender = value;
+
+      if (persist) {
+        if (hidden) clearFieldError(hidden);
+        updateOrderSummary();
+      }
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        select(btn.getAttribute('data-value'), true);
+      });
+
+      // Teclado: flechas izquierda/derecha como en un radiogroup
+      btn.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const index = buttons.indexOf(btn);
+        const step = e.key === 'ArrowRight' ? 1 : buttons.length - 1;
+        const next = buttons[(index + step) % buttons.length];
+        select(next.getAttribute('data-value'), true);
+        next.focus({ preventScroll: true });
+      });
+    });
+
+    select((hidden && hidden.value) || state.gender || 'nino', false);
+  }
 
   /**
    * Las muestras redondas del tono de piel eran <div> sin ningún listener: al
@@ -1836,11 +1894,31 @@
   }
 
   /**
+   * Resumen de errores junto al botón de pago. El aviso existía en el HTML
+   * pero ningún código lo mostraba (display:none sin la clase .show), así que
+   * el cliente no sabía qué le faltaba rellenar.
+   */
+  function showValidationSummary(messages) {
+    const box = document.getElementById('form-alert-msg');
+    if (!box) return;
+
+    if (!messages || !messages.length) {
+      box.classList.remove('show');
+      box.textContent = '';
+      return;
+    }
+
+    box.textContent = '⚠️ ' + messages.join(' · ');
+    box.classList.add('show');
+  }
+
+  /**
    * Validates all required form fields. Returns true if valid, false otherwise.
    */
   function validateForm(shouldScroll = true) {
     let isValid = true;
     let firstErrorField = null;
+    const missing = [];
 
     // Helper to test and flag
     function check(condition, fieldEl, errorKey) {
@@ -1849,6 +1927,7 @@
         showFieldError(fieldEl, errorKey);
         isValid = false;
         if (!firstErrorField) firstErrorField = fieldEl;
+        if (errorKey) missing.push(t(errorKey));
       } else {
         clearFieldError(fieldEl);
       }
@@ -1898,6 +1977,9 @@
         check(storyVal.length >= 10, customStoryEl, 'error.custom_story');
       }
     }
+
+    // Aviso resumido junto al botón de PayPal
+    showValidationSummary(missing);
 
     // 7. Smooth scroll to first invalid field
     if (!isValid && shouldScroll && firstErrorField) {
@@ -2002,17 +2084,40 @@
     };
 
     // Cargar solo cuando el bloque de pago se acerque a la pantalla.
+    var started = false;
+    var begin = function () {
+      if (started) return;
+      started = true;
+      // Al llegar aquí ya no hace falta observar ni escuchar más
+      if (window.__lmPaypalInteraction) {
+        window.removeEventListener('scroll', window.__lmPaypalInteraction);
+        window.removeEventListener('touchstart', window.__lmPaypalInteraction);
+        window.removeEventListener('pointerdown', window.__lmPaypalInteraction);
+      }
+      start();
+    };
+
     if ('IntersectionObserver' in window) {
       var observer = new IntersectionObserver(function (entries) {
         if (entries.some(function (entry) { return entry.isIntersecting; })) {
           observer.disconnect();
-          start();
+          begin();
         }
       }, { rootMargin: '400px 0px' });
       observer.observe(container);
     } else {
-      start();
+      begin();
     }
+
+    // Precarga al primer gesto del usuario (scroll/touch): así, cuando llega
+    // al botón de pago, el SDK ya está descargado y los botones aparecen
+    // sin esperar. El script es async, no bloquea el primer pintado.
+    window.__lmPaypalInteraction = function () {
+      begin();
+    };
+    window.addEventListener('scroll', window.__lmPaypalInteraction, { passive: true });
+    window.addEventListener('touchstart', window.__lmPaypalInteraction, { passive: true });
+    window.addEventListener('pointerdown', window.__lmPaypalInteraction, { passive: true });
   }
 
   /**
@@ -2032,6 +2137,24 @@
           label: 'pay'
         },
 
+        // Si faltan datos no se abre la ventana de PayPal: el aviso se queda
+        // en la propia página. Antes se abría, el cliente iniciaba sesión y
+        // entonces le devolvía el error — justo lo que parecía "raro".
+        onClick: function (data, actions) {
+          try {
+            if (validateForm(true)) {
+              if (actions && typeof actions.resolve === 'function') return actions.resolve();
+              return undefined;
+            }
+            if (actions && typeof actions.reject === 'function') return actions.reject();
+            // Sin reject disponible: seguimos igual que antes y createOrder
+            // vuelve a validar antes de crear el cobro.
+            return undefined;
+          } catch (e) {
+            return undefined;
+          }
+        },
+
         createOrder: function (data, actions) {
           // Validate form first before proceeding with payment
           const isFormValid = validateForm(true);
@@ -2045,9 +2168,18 @@
           const selectedPlan = state.selectedPlan || PLANS.familiar;
 
           return actions.order.create({
+            // Un producto digital: NO_SHIPPING le dice a PayPal que no pregunte
+            // la dirección de envío en su propia pantalla de pago, que era el
+            // paso de más que hacía que el pago pareciera muy largo.
+            application_context: {
+              brand_name: 'Libros Magicos',
+              shipping_preference: 'NO_SHIPPING',
+              user_action: 'PAY_NOW'
+            },
             purchase_units: [
               {
                 description: `Libros Mágicos - Plan ${selectedPlan.name}`,
+                shipping_preference: 'NO_SHIPPING',
                 amount: {
                   value: selectedPlan.price.toFixed(2),
                   currency_code: 'USD'
@@ -2427,6 +2559,7 @@
     initPlanSelection();
     initStorySelection();
     initFormListeners();
+    initGenderSelector();
     initSkinToneSwatches();
     initPayPal();
     updateOrderSummary();
